@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Cartão do SUS - Base Local</title>
+
+    <style>
+      * {
+        margin: 0px;
+        padding: 0px;
+        box-sizing: border-box;
+      }
+
+      .row {
+        margin-bottom: 10px;
+      }
+
+      .container {
+        margin: 0 auto;
+        width: 670px;
+        display: flex;
+        position: relative;
+        font-family: "Courier New", Courier, monospace;
+        font-weight: bold;
+      }
+
+      .card-image {
+        width: 670px;
+      }
+
+      .box-data {
+        background-color: #fff;
+        width: 240px;
+        height: 120px;
+        position: absolute;
+        top: 57px;
+        right: 46px;
+        padding: 10px;
+      }
+
+      section.text {
+        font-size: 10px;
+      }
+
+      div.double-info {
+        display: flex;
+        justify-content: space-between;
+        margin-right: 17px;
+        font-size: 9.1px;
+      }
+
+      .birth-label {
+        letter-spacing: 0.1px;
+      }
+
+      .birth-value {
+        display: inline-block;
+        margin-left: 2.5px;
+        letter-spacing: 0.1px;
+      }
+
+      span.name {
+        display: block;
+        height: 25px;
+      }
+
+      .barcode .number {
+        font-size: 20px;
+        display: block;
+        text-align: center;
+      }
+
+      .barcode img {
+        width: 220px;
+        height: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    {% for item in cardList %}
+    <div class="row">
+      <div class="container">
+        <img src="../card-image.jpg" class="card-image" />
+        <div class="box-data">
+          <section class="text">
+            <span class="name">{{ item.nome }}</span>
+            <div class="double-info">
+              <span class="birth-label"
+                >Data Nasc.:<span class="birth-value">{{
+                  item.dataNascimento
+                }}</span></span
+              >
+              <span>Sexo: {{ item.sexo }}</span>
+            </div>
+          </section>
+          <section class="barcode">
+            <span class="number">{{ item.numeroCns }}</span>
+            <img src="{{ item.barcode }}" />
+          </section>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </body>
+</html>
