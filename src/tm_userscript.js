@@ -97,6 +97,9 @@ const BASE_URL = `http://${HOST}:${PORT}`;
   // INITIALIZE
   window.$("#stack-diag").hide();
   window.$("#stack-confirmation").hide();
+  if (getStack() == null) {
+    setStack([]);
+  }
   setStackCounterValue(getStack().length);
 
   window.offlinePrint = cns => {
@@ -135,52 +138,49 @@ const BASE_URL = `http://${HOST}:${PORT}`;
     } = JSON.parse(atob(usuario));
 
     // verificar se o usuario existe
-    window.$.get(
-      `${BASE_URL}/existe_usuario/${numeroCns}`,
-      response => {
-        if (response !== null) {
-          // tem dado
-          console.log("Recuperado da base de dados offline.");
-          window.offlinePrint(numeroCns);
-        } else {
-          window.bloqueioPesquisa();
-          // pede dados extras e salva
-          console.log("Coletando dados para salvar offline...");
-          window.$.post(
-            "https://cadastro.saude.gov.br/novocartao/restrito/consultar/visualizar.form",
-            { cns: numeroCns },
-            responseExtraData => {
-              console.log("Dados coletados");
+    window.$.get(`${BASE_URL}/existe_usuario/${numeroCns}`, response => {
+      if (response !== null) {
+        // tem dado
+        console.log("Recuperado da base de dados offline.");
+        window.offlinePrint(numeroCns);
+      } else {
+        window.bloqueioPesquisa();
+        // pede dados extras e salva
+        console.log("Coletando dados para salvar offline...");
+        window.$.post(
+          "https://cadastro.saude.gov.br/novocartao/restrito/consultar/visualizar.form",
+          { cns: numeroCns },
+          responseExtraData => {
+            console.log("Dados coletados");
 
-              const { cpf, municipioNascimentoCodigo } = responseExtraData;
+            const { cpf, municipioNascimentoCodigo } = responseExtraData;
 
-              // dados extras prontos, só salvar.
-              window.$.ajax({
-                type: "POST",
-                url: `${BASE_URL}/novo_usuario`,
-                data: JSON.stringify({
-                  numeroCns,
-                  cpf,
-                  nome,
-                  dataNascimento,
-                  sexo,
-                  municipioNascimento,
-                  municipioNascimentoCodigo,
-                  nomeMae,
-                  nomePai
-                }),
-                contentType: "application/json",
-                success: response => {
-                  console.log("Cartão agora está disponível offline.");
-                  window.bloqueioLiberar();
-                  window.offlinePrint(numeroCns);
-                }
-              });
-            },
-            "json"
-          );
-        }
+            // dados extras prontos, só salvar.
+            window.$.ajax({
+              type: "POST",
+              url: `${BASE_URL}/novo_usuario`,
+              data: JSON.stringify({
+                numeroCns,
+                cpf,
+                nome,
+                dataNascimento,
+                sexo,
+                municipioNascimento,
+                municipioNascimentoCodigo,
+                nomeMae,
+                nomePai
+              }),
+              contentType: "application/json",
+              success: response => {
+                console.log("Cartão agora está disponível offline.");
+                window.bloqueioLiberar();
+                window.offlinePrint(numeroCns);
+              }
+            });
+          },
+          "json"
+        );
       }
-    );
+    });
   };
 })();
