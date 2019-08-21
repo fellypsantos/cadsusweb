@@ -28,7 +28,8 @@ const UserSchema = new mongoose.Schema({
   },
   municipioNascimentoCodigo: {
     type: String,
-    require: true
+    require: true,
+    default: '999999'
   },
   nomeMae: {
     type: String,
