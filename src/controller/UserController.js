@@ -48,7 +48,7 @@ module.exports = {
     if (duplicated === null) {
       const response = await User.create(req.body);
 
-      console.log("Usuário salvo offline.");
+      console.log(`[${response.numeroCns}] Usuário salvo offline.`);
 
       notifier.notify({
         title: "CADSUS - Local Database",
@@ -66,6 +66,7 @@ module.exports = {
   async userExists(req, res) {
     const response = await User.findOne({ numeroCns: req.params.cns });
     if (response !== null) {
+      console.log(`[${req.params.cns}] Recuperado da base local.`.yellow);
       res.json(response);
     } else {
       res.json(null);

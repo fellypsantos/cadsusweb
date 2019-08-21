@@ -23,4 +23,13 @@ api.use(express.static(path.resolve(__dirname, "public")));
 api.use(express.json());
 api.use(cors());
 api.use(require("./src/routes"));
-api.listen(7125);
+api.listen(7125, () => {
+  console.log(`
+                  |                         |    
+    ,---.,---.,---|,---..   .,---.. . .,---.|---.
+    |    ,---||   |\`---.|   |\`---.| | ||---'|   |
+    \`---'\`---^\`---'\`---'\`---'\`---'\`-'-'\`---'\`---'
+\n`);
+  console.log("    (~˘-˘)~  Servidor rodando.");
+  console.log("    (~`-´)~  Não feche essa janela!\n\n");
+});
