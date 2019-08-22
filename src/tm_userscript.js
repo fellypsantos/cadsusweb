@@ -105,7 +105,7 @@ const BASE_URL = `http://${HOST}:${PORT}`;
   };
 
   // INITIALIZE
-  window.cadsusweblugin_Init();
+  window.cadsuswebPlugin_Init();
 
   window.offlinePrint = cns => {
     window.$("#stack-confirmation").dialog({
