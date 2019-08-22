@@ -9,6 +9,7 @@ const BASE_URL = `http://${HOST}:${PORT}`;
 // @description  Melhorias locais no ambiente de impressão do Cartão do SUS.
 // @author       Fellyp Santos
 // @match        https://cadastro.saude.gov.br/novocartao/restrito/usuarioConsulta.jsp
+// @match        https://cadastro.saude.gov.br/novocartao/restrito/usuarioCadastro.jsp*
 // @grant        none
 // ==/UserScript==
 
@@ -94,13 +95,17 @@ const BASE_URL = `http://${HOST}:${PORT}`;
         </table>
       </div>`);
 
+  window.cadsuswebPlugin_Init = () => {
+    window.$("#stack-diag").hide();
+    window.$("#stack-confirmation").hide();
+    if (getStack() == null) {
+      setStack([]);
+    }
+    setStackCounterValue(getStack().length);
+  };
+
   // INITIALIZE
-  window.$("#stack-diag").hide();
-  window.$("#stack-confirmation").hide();
-  if (getStack() == null) {
-    setStack([]);
-  }
-  setStackCounterValue(getStack().length);
+  window.cadsusweblugin_Init();
 
   window.offlinePrint = cns => {
     window.$("#stack-confirmation").dialog({
@@ -126,7 +131,39 @@ const BASE_URL = `http://${HOST}:${PORT}`;
     });
   };
 
+  window.gerarCartaoCadastro = user => {
+    var urlRetorno = "usuarioConsulta.jsp";
+    if (user.numeroProtocoloPrecadastro || user.protocoloPrimeiroAcesso) {
+      urlRetorno = "usuarioConsultaProtocolo.jsp";
+    }
+
+    window.solicitarDialogoGerarCartao(user);
+
+    dialogoGerarCartao(
+      urlRetorno,
+      JSON.toBase64(user),
+      "Voltar para a consulta",
+      function() {
+        bloqueioAguarde();
+        $(window).unbind("beforeunload");
+        window.location.href = urlRetorno;
+      },
+      "ui-icon-arrowrefresh-1-w"
+    );
+  };
+
   window.solicitarDialogoGerarCartao = usuario => {
+    /**
+     *  usuario -> pode vir como string base64 ou object
+     *
+     *  base64 -> quando vier da tela de cadastro
+     *  object -> quando vier da tela de consulta
+     */
+
+    if (typeof usuario !== "object") {
+      usuario = JSON.parse(atob(usuario));
+    }
+
     const {
       nome,
       dataNascimento,
@@ -135,7 +172,7 @@ const BASE_URL = `http://${HOST}:${PORT}`;
       municipioNascimento,
       nomeMae,
       nomePai
-    } = JSON.parse(atob(usuario));
+    } = usuario;
 
     // verificar se o usuario existe
     window.$.get(`${BASE_URL}/existe_usuario/${numeroCns}`, response => {

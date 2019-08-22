@@ -5,7 +5,7 @@ const colors = require("colors");
 const jsbarcode = require("jsbarcode");
 const { createCanvas } = require("canvas");
 
-formattedCns = cns => {
+const formattedCns = cns => {
   let formatted = "";
   let lastBlock = 0;
 
@@ -23,11 +23,11 @@ formattedCns = cns => {
   return formatted.trim();
 };
 
-convertToSexCode = sex => {
+const convertToSexCode = sex => {
   return sex === "M" ? "1" : "2";
 };
 
-generateBarCodeBase64 = (cns, sexCode, cityCode) => {
+const generateBarCodeBase64 = (cns, sexCode, cityCode) => {
   let cardBarCode = createCanvas();
   let cardBarCodeNumber = `${cns}111${sexCode}${cityCode}0`;
   jsbarcode(cardBarCode, cardBarCodeNumber, {
@@ -37,18 +37,66 @@ generateBarCodeBase64 = (cns, sexCode, cityCode) => {
   return cardBarCode.toDataURL();
 };
 
+const map = {
+  â: "a",
+  Â: "A",
+  à: "a",
+  À: "A",
+  á: "a",
+  Á: "A",
+  ã: "a",
+  Ã: "A",
+  ê: "e",
+  Ê: "E",
+  è: "e",
+  È: "E",
+  é: "e",
+  É: "E",
+  î: "i",
+  Î: "I",
+  ì: "i",
+  Ì: "I",
+  í: "i",
+  Í: "I",
+  õ: "o",
+  Õ: "O",
+  ô: "o",
+  Ô: "O",
+  ò: "o",
+  Ò: "O",
+  ó: "o",
+  Ó: "O",
+  ü: "u",
+  Ü: "U",
+  û: "u",
+  Û: "U",
+  ú: "u",
+  Ú: "U",
+  ù: "u",
+  Ù: "U",
+  ç: "c",
+  Ç: "C"
+};
+
+const removerAcentos = s => {
+  return s.replace(/[\W\[\] ]/g, function(a) {
+    return map[a] || a;
+  });
+};
+
 module.exports = {
   async addUser(req, res) {
-    // console.log(req.body);
-
     // find user by CNS
     const duplicated = await User.findOne({ numeroCns: req.body.numeroCns });
+
+    req.body.nome = removerAcentos(req.body.nome);
 
     // save it if doesn't exist yet
     if (duplicated === null) {
       const response = await User.create(req.body);
 
       console.log(`[${response.numeroCns}] Usuário salvo offline.`);
+      notify(`[${response.numeroCns}] Usuário salvo offline.`);
 
       notifier.notify({
         title: "CADSUS - Local Database",
@@ -67,6 +115,7 @@ module.exports = {
     const response = await User.findOne({ numeroCns: req.params.cns });
     if (response !== null) {
       console.log(`[${req.params.cns}] Recuperado da base local.`.yellow);
+      notify(`[${req.params.cns}] Recuperado da base local.`);
       res.json(response);
     } else {
       res.json(null);
@@ -107,6 +156,7 @@ module.exports = {
         userData.numeroCns = formattedCns(userData.numeroCns);
 
         console.log(" - Cartão pronto para impressão.\n".green);
+        notify(`Cartão pronto para impressão.`);
         cardList.push(userData);
       } else {
         console.log(` - Cartão ${cns} não disponível offline.\n`.red);
