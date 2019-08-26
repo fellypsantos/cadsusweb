@@ -96,7 +96,6 @@ module.exports = {
       const response = await User.create(req.body);
 
       console.log(`[${response.numeroCns}] Usuário salvo offline.`);
-      notify(`[${response.numeroCns}] Usuário salvo offline.`);
 
       notifier.notify({
         title: "CADSUS - Local Database",
@@ -115,7 +114,6 @@ module.exports = {
     const response = await User.findOne({ numeroCns: req.params.cns });
     if (response !== null) {
       console.log(`[${req.params.cns}] Recuperado da base local.`.yellow);
-      notify(`[${req.params.cns}] Recuperado da base local.`);
       res.json(response);
     } else {
       res.json(null);
@@ -156,7 +154,6 @@ module.exports = {
         userData.numeroCns = formattedCns(userData.numeroCns);
 
         console.log(" - Cartão pronto para impressão.\n".green);
-        notify(`Cartão pronto para impressão.`);
         cardList.push(userData);
       } else {
         console.log(` - Cartão ${cns} não disponível offline.\n`.red);

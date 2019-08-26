@@ -3,6 +3,7 @@ const nunjucks = require("nunjucks");
 const mongoose = require("mongoose");
 const path = require("path");
 const cors = require("cors");
+const config = require("./package.json");
 const api = express();
 
 nunjucks.configure("views", {
@@ -11,7 +12,7 @@ nunjucks.configure("views", {
   watch: true
 });
 
-mongoose.connect("mongodb://localhost:27017/cadsus-local-api", {
+mongoose.connect(`mongodb://${config.databaseAddress}:27017/cadsus-local-api`, {
   useNewUrlParser: true
 });
 
@@ -31,5 +32,6 @@ api.listen(7125, () => {
     \`---'\`---^\`---'\`---'\`---'\`---'\`-'-'\`---'\`---'
 \n`);
   console.log("    (~˘-˘)~  Servidor rodando.");
-  console.log("    (~`-´)~  Não feche essa janela!\n\n");
+  console.log("    (~`-´)~  Não feche essa janela!\n");
+  console.log("    (~˘-˘)~  http://localhost:7125\n\n");
 });

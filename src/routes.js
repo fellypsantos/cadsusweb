@@ -3,7 +3,6 @@ const routes = express.Router();
 const UserController = require("../src/controller/UserController");
 
 routes.get("/", (req, res) => {
-  // res.send("CADUS Local Server");
   res.render("index");
 });
 

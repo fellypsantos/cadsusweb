@@ -2,6 +2,7 @@
   "name": "cadsuslocalapi",
   "version": "1.0.0",
   "main": "index.js",
+  "databaseAddress": "127.0.0.1",
   "scripts": {
     "start": "nodemon ."
   },
