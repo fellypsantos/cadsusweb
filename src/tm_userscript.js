@@ -190,7 +190,27 @@ const BASE_URL = `http://${HOST}:${PORT}`;
           responseExtraData => {
             console.log("Dados coletados");
 
-            const { cpf, municipioNascimentoCodigo } = responseExtraData;
+            const {
+              cpf,
+              municipioNascimentoCodigo,
+              cartoesAgregados
+            } = responseExtraData;
+
+            let myCards = cartoesAgregados.filter(
+              cns => cns.tipo === "Provisório"
+            );
+
+            myCards.forEach(cns => {
+              // verificar se os cartões provisórios estão no banco
+              // e altera o numero para o definitivo se existir
+              // pra não duplicar cadastros
+              window.$.get(
+                `${BASE_URL}/existe_usuario/${cns}`,
+                responseTempCard => {
+                  console.warn("[VERIFICAÇÃO] - ", responseTempCard);
+                }
+              );
+            });
 
             // dados extras prontos, só salvar.
             window.$.ajax({
