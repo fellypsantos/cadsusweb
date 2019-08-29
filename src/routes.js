@@ -8,7 +8,8 @@ routes.get("/", (req, res) => {
 
 routes.get("/cartao/:cns", UserController.generateCard);
 routes.get("/existe_usuario/:cns", UserController.userExists);
-
 routes.post("/novo_usuario", UserController.addUser);
+// routes.put("/atualiza_usuario/:id", UserController.updateUser);
+routes.delete("/remove_usuario/:id", UserController.removeUser);
 
 module.exports = routes;

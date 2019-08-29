@@ -120,6 +120,22 @@ module.exports = {
     }
   },
 
+  async updateUser(req, res) {
+    console.log("updateUser", req.body);
+    const response = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      useFindAndModify: false
+    });
+
+    return res.json(response);
+  },
+
+  async removeUser(req, res) {
+    await User.findByIdAndDelete(req.params.id);
+    console.log("Cartão provisório localizado, salvando definitivo...");
+    res.send("Deleted.");
+  },
+
   async generateCard(req, res) {
     const cardListParams = req.params.cns.split(",");
     let cardList = [];

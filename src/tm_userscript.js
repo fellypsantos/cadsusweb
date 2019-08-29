@@ -200,19 +200,31 @@ const BASE_URL = `http://${HOST}:${PORT}`;
               cns => cns.tipo === "Provisório"
             );
 
-            myCards.forEach(cns => {
+            myCards.forEach(card => {
               // verificar se os cartões provisórios estão no banco
-              // e altera o numero para o definitivo se existir
-              // pra não duplicar cadastros
+              // deleta se existir, pra não duplicar cadastros
               window.$.get(
-                `${BASE_URL}/existe_usuario/${cns}`,
+                `${BASE_URL}/existe_usuario/${card.cns}`,
                 responseTempCard => {
-                  console.warn("[VERIFICAÇÃO] - ", responseTempCard);
+                  if (responseTempCard !== null) {
+                    // encontrou cartão do usuário, com número provisório
+                    // delete o encontrado e salva o novo
+                    console.log(`Remover ${card.cns} e salvar ${numeroCns}`);
+
+                    window.$.ajax({
+                      url: `${BASE_URL}/remove_usuario/${responseTempCard._id}`,
+                      type: "DELETE",
+                      contentType: "application/json",
+                      success: responseUpdated => {
+                        console.log("Cartão provisório removido.");
+                      }
+                    });
+                  }
                 }
               );
             });
 
-            // dados extras prontos, só salvar.
+            // CRIA O NOVO CADASTRO
             window.$.ajax({
               type: "POST",
               url: `${BASE_URL}/novo_usuario`,
