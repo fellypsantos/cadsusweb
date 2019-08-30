@@ -1,20 +1,23 @@
 const HOST = "localhost";
 const PORT = 7125;
-const BASE_URL = `http://${HOST}:${PORT}`;
+const BASE_URL = `http  ://${HOST}:${PORT}`;
 
 // ==UserScript==
 // @name         CADSUS Web - Plugin
 // @namespace    https://github.com/fellypsantos/cadsusweb
-// @version      1.0
+// @version      1.0.1
 // @description  Melhorias locais no ambiente de impressão do Cartão do SUS.
 // @author       Fellyp Santos
 // @match        https://cadastro.saude.gov.br/novocartao/restrito/usuarioConsulta.jsp
 // @match        https://cadastro.saude.gov.br/novocartao/restrito/usuarioCadastro.jsp*
+// @updateURL    https://raw.githubusercontent.com/fellypsantos/cadsusweb/master/src/tm_userscript.js
 // @grant        none
 // ==/UserScript==
 
 (function() {
   "use strict";
+
+  console.log("Teste de atualização, v1.0.1");
 
   const mainForm = window.$("form").eq(0);
   const getStack = () => JSON.parse(localStorage.getItem("fila_cartoes"));
