@@ -5,7 +5,7 @@ const BASE_URL = `https://${HOST}:${PORT}`;
 // ==UserScript==
 // @name         CADSUS Web - Plugin
 // @namespace    https://github.com/fellypsantos/cadsusweb
-// @version      1.0.1
+// @version      1.1
 // @description  Melhorias locais no ambiente de impressão do Cartão do SUS.
 // @author       Fellyp Santos
 // @match        https://cadastro.saude.gov.br/novocartao/restrito/usuarioConsulta.jsp
