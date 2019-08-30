@@ -1,6 +1,6 @@
 const HOST = "localhost";
 const PORT = 7125;
-const BASE_URL = `http  ://${HOST}:${PORT}`;
+const BASE_URL = `https://${HOST}:${PORT}`;
 
 // ==UserScript==
 // @name         CADSUS Web - Plugin
