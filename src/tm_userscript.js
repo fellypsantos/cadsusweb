@@ -10,6 +10,7 @@ const BASE_URL = `https://${HOST}:${PORT}`;
 // @author       Fellyp Santos
 // @match        https://cadastro.saude.gov.br/novocartao/restrito/usuarioConsulta.jsp
 // @match        https://cadastro.saude.gov.br/novocartao/restrito/usuarioCadastro.jsp*
+// @downloadURL  https://raw.githubusercontent.com/fellypsantos/cadsusweb/master/src/tm_userscript.js
 // @updateURL    https://raw.githubusercontent.com/fellypsantos/cadsusweb/master/src/tm_userscript.js
 // @grant        none
 // ==/UserScript==
