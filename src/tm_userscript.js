@@ -1,7 +1,3 @@
-const HOST = "localhost";
-const PORT = 7125;
-const BASE_URL = `https://${HOST}:${PORT}`;
-
 // ==UserScript==
 // @name         CADSUS Web - Plugin
 // @namespace    https://github.com/fellypsantos/cadsusweb
@@ -18,7 +14,9 @@ const BASE_URL = `https://${HOST}:${PORT}`;
 (function() {
   "use strict";
 
-  console.log("Teste de atualização, v1.0.1");
+  const HOST = "localhost";
+  const PORT = 7125;
+  const BASE_URL = `https://${HOST}:${PORT}`;
 
   const mainForm = window.$("form").eq(0);
   const getStack = () => JSON.parse(localStorage.getItem("fila_cartoes"));
