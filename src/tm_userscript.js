@@ -141,13 +141,13 @@
 
     window.solicitarDialogoGerarCartao(user);
 
-    dialogoGerarCartao(
+    window.dialogoGerarCartao(
       urlRetorno,
       JSON.toBase64(user),
       "Voltar para a consulta",
       function() {
-        bloqueioAguarde();
-        $(window).unbind("beforeunload");
+        window.bloqueioAguarde();
+        window.$(window).unbind("beforeunload");
         window.location.href = urlRetorno;
       },
       "ui-icon-arrowrefresh-1-w"
