@@ -16,7 +16,7 @@
 
   const HOST = "localhost";
   const PORT = 7125;
-  const BASE_URL = `https://${HOST}:${PORT}`;
+  const BASE_URL = `http://${HOST}:${PORT}`;
 
   const mainForm = window.$("form").eq(0);
   const getStack = () => JSON.parse(localStorage.getItem("fila_cartoes"));

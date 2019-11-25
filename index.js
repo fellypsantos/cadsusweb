@@ -6,7 +6,6 @@ const cors = require("cors");
 const config = require("./package.json");
 const api = express();
 const fs = require("fs");
-const https = require("https");
 
 nunjucks.configure("views", {
   autoescape: true,
@@ -15,7 +14,8 @@ nunjucks.configure("views", {
 });
 
 mongoose.connect(`mongodb://${config.databaseAddress}:27017/cadsus-local-api`, {
-  useNewUrlParser: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 });
 
 // importar models aqui
@@ -27,22 +27,14 @@ api.use(express.json());
 api.use(cors());
 api.use(require("./src/routes"));
 
-https
-  .createServer(
-    {
-      key: fs.readFileSync("certificado.pkey"),
-      cert: fs.readFileSync("certificado.cer")
-    },
-    api
-  )
-  .listen(7125, () => {
-    console.log(`
+api.listen(7125, () => {
+  console.log(`
                   |                         |    
     ,---.,---.,---|,---..   .,---.. . .,---.|---.
     |    ,---||   |\`---.|   |\`---.| | ||---'|   |
     \`---'\`---^\`---'\`---'\`---'\`---'\`-'-'\`---'\`---'
 \n`);
-    console.log("    (~˘-˘)~  Servidor rodando.");
-    console.log("    (~`-´)~  Não feche essa janela!\n");
-    console.log("    (~˘-˘)~  http://localhost:7125\n\n");
-  });
+  console.log("    (~˘-˘)~  Servidor rodando.");
+  console.log("    (~`-´)~  Não feche essa janela!\n");
+  console.log("    (~˘-˘)~  http://localhost:7125\n\n");
+});
