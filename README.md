@@ -14,20 +14,6 @@ Melhorias locais no ambiente de impressão do Cartão do SUS.
 - Impressão de vários cartões na mesma folha
 - Fila de impressão implementada em localStorage
 
-### Instalação
-
-Clone o repositório, ou faça download, acesse a pasta cadsusweb e execute o arquivo.
-
-```
-install.bat
-```
-
-Quando a janela fechar, todas as dependências estarão instaladas, e execute o arquivo.
-
-```
-cadsusweb.bat
-```
-
 ### Configuração
 
 Por motivos de segurança, é necessário utilizar especificamente o Google Chrome para esse sistema, pois o Mozilla Firefox bloqueia requisições AJAX para outros endereços IP, o que é um problema já que rodaremos o servidor pra ser acessado também de outros computadores na rede local.
