@@ -5,6 +5,8 @@ const colors = require("colors");
 const jsbarcode = require("jsbarcode");
 const { createCanvas } = require("canvas");
 
+let userSystemTraffic = 0;
+
 const formattedCns = cns => {
   let formatted = "";
   let lastBlock = 0;
@@ -84,6 +86,15 @@ const removerAcentos = s => {
   });
 };
 
+const totalUserTraffic = () => {
+  userSystemTraffic++;
+  console.log(
+    `\nTráfego: ${userSystemTraffic} ${
+      userSystemTraffic == 1 ? "usuário" : "usuários"
+    }.\n`
+  );
+};
+
 module.exports = {
   async addUser(req, res) {
     // find user by CNS
@@ -95,7 +106,9 @@ module.exports = {
     if (duplicated === null) {
       const response = await User.create(req.body);
 
+      console.log(`[${response.nome}]`);
       console.log(`[${response.numeroCns}] Usuário salvo offline.`);
+      totalUserTraffic();
 
       notifier.notify({
         title: "CADSUS - Local Database",
@@ -105,6 +118,7 @@ module.exports = {
 
       return res.json(response);
     } else {
+      console.log(`[${response.nome}]`);
       console.log("Cadastro já existe na base offline.");
       return res.send(null);
     }
@@ -114,6 +128,7 @@ module.exports = {
     const response = await User.findOne({ numeroCns: req.params.cns });
     if (response !== null) {
       console.log(`[${req.params.cns}] Recuperado da base local.`.yellow);
+      totalUserTraffic();
       res.json(response);
     } else {
       res.json(null);

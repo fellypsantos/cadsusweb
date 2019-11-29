@@ -34,7 +34,8 @@ api.listen(7125, () => {
     |    ,---||   |\`---.|   |\`---.| | ||---'|   |
     \`---'\`---^\`---'\`---'\`---'\`---'\`-'-'\`---'\`---'
 \n`);
-  console.log("    (~˘-˘)~  Servidor rodando.");
-  console.log("    (~`-´)~  Não feche essa janela!\n");
-  console.log("    (~˘-˘)~  http://localhost:7125\n\n");
+  console.log("    (~˘-˘)~    Servidor rodando.");
+  console.log("    (~`-´)~    Não feche essa janela!\n");
+  console.log("    Localhost  127.0.0.1:7125");
+  console.log(`    MongoDB    ${config.databaseAddress}:27017\n\n`);
 });
