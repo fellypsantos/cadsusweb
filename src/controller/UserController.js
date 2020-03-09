@@ -2,41 +2,22 @@ const mongoose = require("mongoose");
 const User = mongoose.model("User");
 const notifier = require("node-notifier");
 const colors = require("colors");
-const jsbarcode = require("jsbarcode");
-const { createCanvas } = require("canvas");
+const bwipjs = require("bwip-js");
 
 let userSystemTraffic = 0;
 
-const formattedCns = cns => {
-  let formatted = "";
-  let lastBlock = 0;
+formattedCns = cns => cns.replace(/^(\d{3})(\d{4})(\d{4})(\d{4})/, '$1 $2 $3 $4');
 
-  for (let i = 0; i < 4; i++) {
-    if (i == 0) {
-      formatted = cns.substring(0, 3) + " ";
-      lastBlock = 3;
-      continue;
-    }
+const convertToSexCode = sex => sex === "M" ? "1" : "2";
 
-    formatted += cns.substring(lastBlock, lastBlock + 4) + " ";
-    lastBlock += 4; // next 4 digits
-  }
-
-  return formatted.trim();
-};
-
-const convertToSexCode = sex => {
-  return sex === "M" ? "1" : "2";
-};
-
-const generateBarCodeBase64 = (cns, sexCode, cityCode) => {
-  let cardBarCode = createCanvas();
-  let cardBarCodeNumber = `${cns}111${sexCode}${cityCode}0`;
-  jsbarcode(cardBarCode, cardBarCodeNumber, {
-    displayValue: false
+const generateBarCodeBase64 = async (cns, sexCode, cityCode) => {
+  const cardBarCodeNumber = `${cns}111${sexCode}${cityCode}0`;
+  const cardBarCode = await bwipjs.toBuffer({
+    bcid:        'code128',
+    text:        cardBarCodeNumber,
   });
 
-  return cardBarCode.toDataURL();
+  return 'data:image/png;base64,' + cardBarCode.toString('base64');
 };
 
 const map = {
@@ -177,19 +158,36 @@ module.exports = {
         console.log(" - Encontrado na base local, processando...");
 
         sexCode = convertToSexCode(userData.sexo);
-        userData.barcode = generateBarCodeBase64(
+        userData.barcode = await generateBarCodeBase64(
           userData.numeroCns,
           sexCode,
           userData.municipioNascimentoCodigo
         );
-        userData.numeroCns = formattedCns(userData.numeroCns);
 
-        console.log(" - Cartão pronto para impressão.\n".green);
+        userData.numeroCns = formattedCns(userData.numeroCns);
         cardList.push(userData);
+        console.log(" - Cartão pronto para impressão.\n".green);
+
       } else {
         console.log(` - Cartão ${cns} não disponível offline.\n`.red);
       }
     }
     res.render("cartao", { cardList });
-  }
+  },
+
+  // async tryDemo(req, res) {
+    
+  //   const code128 = await bwipjs.toBuffer({
+  //     bcid:        'code128',       // Barcode type
+  //     text:        '898004132326598',    // Text to encode
+  //     scale:       3,               // 3x scaling factor
+  //     height:      10,              // Bar height, in millimeters
+  //     includetext: false,            // Show human-readable text
+  //     textxalign:  'center',        // Always good to set this
+  //   })
+
+  //   console.log('code128', code128.toString('base64'));
+
+  //   res.render("demo");
+  // }
 };
