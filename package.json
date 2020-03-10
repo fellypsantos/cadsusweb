@@ -2,10 +2,9 @@
   "name": "cadsuslocalapi",
   "version": "1.0.0",
   "main": "index.js",
-  "databaseAddress": "192.168.1.117",
   "scripts": {
     "start": "nodemon .",
-    "build": "webpack --mode development"
+    "build": "webpack --mode development && robocopy views dist/views"
   },
   "license": "MIT",
   "dependencies": {

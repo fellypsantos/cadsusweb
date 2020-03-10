@@ -1,11 +1,11 @@
 const express = require("express");
 const nunjucks = require("nunjucks");
 const mongoose = require("mongoose");
-const path = require("path");
 const cors = require("cors");
-const config = require("./package.json");
 const api = express();
-const fs = require("fs");
+const args = process.argv;
+const argMongoDBIndex = args.indexOf('--mongodb');
+const mongodbServer = (argMongoDBIndex > -1) ? args[argMongoDBIndex+1] : 'localhost';
 
 nunjucks.configure("views", {
   autoescape: true,
@@ -13,7 +13,7 @@ nunjucks.configure("views", {
   watch: true
 });
 
-mongoose.connect(`mongodb://${config.databaseAddress}:27017/cadsus-local-api`, {
+mongoose.connect(`mongodb://${ mongodbServer }:27017/cadsus-local-api`, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -22,7 +22,6 @@ mongoose.connect(`mongodb://${config.databaseAddress}:27017/cadsus-local-api`, {
 require("./src/model/User");
 
 api.set("view engine", "njk");
-api.use(express.static(path.resolve(__dirname, "public")));
 api.use(express.json());
 api.use(cors());
 api.use(require("./src/routes"));
@@ -37,5 +36,5 @@ api.listen(7125, () => {
   console.log("    (~˘-˘)~    Servidor rodando.");
   console.log("    (~`-´)~    Não feche essa janela!\n");
   console.log("    Localhost  127.0.0.1:7125");
-  console.log(`    MongoDB    ${config.databaseAddress}:27017\n\n`);
+  console.log(`    MongoDB    ${mongodbServer}:27017\n\n`);
 });
