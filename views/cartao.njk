@@ -11,6 +11,7 @@
         margin: 0px;
         padding: 0px;
         box-sizing: border-box;
+        font-family: "Courier New", Courier, monospace;
       }
 
       .row {
@@ -22,7 +23,6 @@
         width: 620px;
         display: flex;
         position: relative;
-        font-family: "Courier New", Courier, monospace;
         font-weight: bold;
       }
 
@@ -75,11 +75,36 @@
       .barcode img {
         width: 204px;
         height: 30px;
-        /* margin: 0 -3px; */
+      }
+
+      .btnPrint {
+        position: fixed;
+        top: 10px;
+        right: 20px;
+        text-transform: uppercase;
+        background-color: #2184BE;
+        text-decoration: none;
+        padding: 10px 20px;
+        color: #fff;
+        letter-spacing: 1px;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: all .3s ease-in-out;
+      }
+
+      .btnPrint:hover {
+        background-color: #105076;
+        box-shadow: 0px 0px 5px 1px #105076;
+      }
+
+      /* Escode botão na impressão */
+      @media print{
+        .btnPrint { display: none; }
       }
     </style>
   </head>
   <body>
+    <a href="javascript:window.print()" class="btnPrint">Imprimir</a>
     {% for item in cardList %}
     <div class="row">
       <div class="container">
