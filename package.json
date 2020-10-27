@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon .",
-    "build": "webpack --mode development && robocopy views dist/views"
+    "build": "webpack --mode production"
   },
   "license": "MIT",
   "dependencies": {
