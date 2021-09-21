@@ -7,7 +7,8 @@ Melhorias locais no ambiente de impressão do Cartão do SUS.
 ## Requisitos mínimos
 
 - NodeJS v12 ou superior.
-- Google Chrome v76 ou superior.
+- Google Chrome ou Firefox na versão mais recente.
+- Banco de Dados MongoDB
 
 ## Recursos
 
@@ -24,14 +25,13 @@ Primeiro passo é baixar a extenção Tampermonkey, que será responsável por e
 Download no site oficial [Tampermonkey para Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=pt-BR) ou [Tampermonkey para Firefox](https://addons.mozilla.org/pt-BR/firefox/addon/tampermonkey/).
 
 ### Instalação e Configuração
-- ####Userscript
-É o código responsável por gerar os botões extras na tela de consulta, controlar fila e tela de impressão. O primeiro opasso é insntalar o Tampermonkey no seu navegador, após instalado, clique no link abaixo para instalar o userscript no tampermonkey.
 
-**[INSTALAR USERSCRIPT]()**
+##### Userscript
+É o código responsável por gerar os botões extras na tela de consulta, controlar fila e tela de impressão. O primeiro passo é instalar o Tampermonkey no seu navegador, após instalado, clique no link abaixo para instalar o userscript no tampermonkey.
 
-- #### Servidor local
+**[INSTALAR USERSCRIPT](https://github.com/fellypsantos/cadsusweb/raw/master/src/cadsusweb.user.js)**
 
-#### Instalação do script - Computador
+##### Instalação do script servidor
 Após feito o download da distribuição através do link disponibilizado no início deste documento, abra o arquivo **dist.zip** e extraia seu conteúdo para uma pasta de sua preferência, eg: C:\cadsusweb\
 
 Abra com algum editor de texto, o arquivo tm_userscript.js localizado na pasta cadsusweb/src/tm_userscript.js copie todo o conteúdo.
