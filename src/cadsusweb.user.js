@@ -1,17 +1,18 @@
 // ==UserScript==
 // @name         CADSUS Web - Plugin
 // @namespace    https://github.com/fellypsantos/cadsusweb
-// @version      1.1
+// @version      1.2
 // @description  Melhorias locais no ambiente de impressão do Cartão do SUS.
 // @author       Fellyp Santos
-// @match        https://cadastro.saude.gov.br/novocartao/restrito/usuarioConsulta.jsp
+// @match        https://cadastro.saude.gov.br/novocartao/restrito/usuarioConsulta.jsp*
 // @match        https://cadastro.saude.gov.br/novocartao/restrito/usuarioCadastro.jsp*
-// @downloadURL  https://raw.githubusercontent.com/fellypsantos/cadsusweb/master/src/tm_userscript.js
-// @updateURL    https://raw.githubusercontent.com/fellypsantos/cadsusweb/master/src/tm_userscript.js
+// @icon         https://www.google.com/s2/favicons?domain=gov.br
+// @downloadURL  https://github.com/fellypsantos/cadsusweb/raw/master/src/cadsusweb.user.js
+// @updateURL    https://github.com/fellypsantos/cadsusweb/raw/master/src/cadsusweb.user.js
 // @grant        none
 // ==/UserScript==
 
-(function() {
+(function () {
   "use strict";
 
   const HOST = "localhost";
@@ -20,15 +21,15 @@
 
   const mainForm = window.$("form").eq(0);
   const getStack = () => JSON.parse(localStorage.getItem("fila_cartoes"));
-  const setStack = data =>
+  const setStack = (data) =>
     localStorage.setItem("fila_cartoes", JSON.stringify(data));
 
-  const setStackCounterValue = value =>
+  const setStackCounterValue = (value) =>
     window.$("#stack-counter").text(value.toString());
 
-  window.deleteFromStack = cns => {
+  window.deleteFromStack = (cns) => {
     let stack = getStack();
-    let newStack = stack.filter(item => item != cns);
+    let newStack = stack.filter((item) => item != cns);
 
     setStack(newStack);
     setStackCounterValue(newStack.length);
@@ -41,7 +42,7 @@
     window.$("#tbl-stack-diag tbody").html("");
 
     let stack = getStack();
-    stack.forEach(cns => {
+    stack.forEach((cns) => {
       window.$("#tbl-stack-diag tbody").append(`
       <tr>
         <th scope="col">${cns}</th>
@@ -109,7 +110,7 @@
   // INITIALIZE
   window.cadsuswebPlugin_Init();
 
-  window.offlinePrint = cns => {
+  window.offlinePrint = (cns) => {
     window.$("#stack-confirmation").dialog({
       width: 400,
       resizable: false,
@@ -128,24 +129,25 @@
         "Imprimir agora": () => {
           window.$("#stack-confirmation").dialog("close");
           window.open(`${BASE_URL}/cartao/${cns}`);
-        }
-      }
+        },
+      },
     });
   };
 
-  window.gerarCartaoCadastro = user => {
+  window.gerarCartaoCadastro = (user) => {
     var urlRetorno = "usuarioConsulta.jsp";
     if (user.numeroProtocoloPrecadastro || user.protocoloPrimeiroAcesso) {
       urlRetorno = "usuarioConsultaProtocolo.jsp";
     }
 
+    console.log("gerarCartaoCadastro()");
     window.solicitarDialogoGerarCartao(user);
 
     window.dialogoGerarCartao(
       urlRetorno,
       JSON.toBase64(user),
       "Voltar para a consulta",
-      function() {
+      function () {
         window.bloqueioAguarde();
         window.$(window).unbind("beforeunload");
         window.location.href = urlRetorno;
@@ -154,13 +156,15 @@
     );
   };
 
-  window.solicitarDialogoGerarCartao = usuario => {
+  window.solicitarDialogoGerarCartao = (usuario) => {
     /**
      *  usuario -> pode vir como string base64 ou object
      *
      *  base64 -> quando vier da tela de cadastro
      *  object -> quando vier da tela de consulta
      */
+
+    console.log("solicitarDialogoGerarCartao");
 
     if (typeof usuario !== "object") {
       usuario = JSON.parse(atob(usuario));
@@ -173,11 +177,11 @@
       numeroCns,
       municipioNascimento,
       nomeMae,
-      nomePai
+      nomePai,
     } = usuario;
 
     // verificar se o usuario existe
-    window.$.get(`${BASE_URL}/existe_usuario/${numeroCns}`, response => {
+    window.$.get(`${BASE_URL}/existe_usuario/${numeroCns}`, (response) => {
       if (response !== null) {
         // tem dado
         console.log("Recuperado da base de dados offline.");
@@ -189,25 +193,22 @@
         window.$.post(
           "https://cadastro.saude.gov.br/novocartao/restrito/consultar/visualizar.form",
           { cns: numeroCns },
-          responseExtraData => {
+          (responseExtraData) => {
             console.log("Dados coletados");
 
-            const {
-              cpf,
-              municipioNascimentoCodigo,
-              cartoesAgregados
-            } = responseExtraData;
+            const { cpf, municipioNascimentoCodigo, cartoesAgregados } =
+              responseExtraData;
 
             let myCards = cartoesAgregados.filter(
-              cns => cns.tipo === "Provisório"
+              (cns) => cns.tipo === "Provisório"
             );
 
-            myCards.forEach(card => {
+            myCards.forEach((card) => {
               // verificar se os cartões provisórios estão no banco
               // deleta se existir, pra não duplicar cadastros
               window.$.get(
                 `${BASE_URL}/existe_usuario/${card.cns}`,
-                responseTempCard => {
+                (responseTempCard) => {
                   if (responseTempCard !== null) {
                     // encontrou cartão do usuário, com número provisório
                     // delete o encontrado e salva o novo
@@ -217,9 +218,9 @@
                       url: `${BASE_URL}/remove_usuario/${responseTempCard._id}`,
                       type: "DELETE",
                       contentType: "application/json",
-                      success: responseUpdated => {
+                      success: (responseUpdated) => {
                         console.log("Cartão provisório removido.");
-                      }
+                      },
                     });
                   }
                 }
@@ -239,14 +240,14 @@
                 municipioNascimento,
                 municipioNascimentoCodigo,
                 nomeMae,
-                nomePai
+                nomePai,
               }),
               contentType: "application/json",
-              success: response => {
+              success: (response) => {
                 console.log("Cartão agora está disponível offline.");
                 window.bloqueioLiberar();
                 window.offlinePrint(numeroCns);
-              }
+              },
             });
           },
           "json"
@@ -254,4 +255,113 @@
       }
     });
   };
+
+  window.gravar = (usuarioSus) => {
+    var usuarioOperacao;
+
+    console.log("na funcao gravar - com proxy para salva em database");
+
+    // Wrap da classe: br.gov.saude.cadsusweb.operacao.UsuarioOperacao
+    usuarioOperacao =
+      new pacote.br.gov.saude.cadsusweb.operacao.UsuarioOperacao();
+
+    // Efetua a gravação
+    bloqueioGravacao();
+
+    // Capturando a flag de dataquality
+    var dataQuality = false;
+    if ($("#desabilitarDataQuality").is(":checked")) {
+      dataQuality = true;
+    }
+
+    if (
+      !usuarioSus.numeroProtocoloPrecadastro &&
+      !usuarioSus.protocoloPrimeiroAcesso
+    ) {
+      console.log(">>>> a");
+
+      usuarioOperacao.gravar(
+        usuarioSus,
+        dataQuality,
+        function (response) {
+          console.log(">>>> usuarioOperacao.gravar : response");
+
+          if (response.merge) {
+            // chama janela para mostrar janelas os dois registros
+            openModalMerge(response);
+          } else {
+            console.log(">>>> usuarioOperacao.gravar : gerarCartaoCadastro");
+            // TELA: NOVO CADASTRO
+            window.solicitarDialogoGerarCartao(response.usuario);
+            gerarCartaoCadastro(response.usuario);
+          }
+        },
+        function (erro) {
+          if (!erro) return false;
+
+          if (erro.errorNoAltToNew) {
+            criarJanelaIncluirNaoAlteracao(erro.msgErro);
+          }
+
+          if (erro.errorNoAltToOutroCad) {
+            criarJanelaNaoAlteracaOutroUsuario(erro.msgErro);
+          }
+        }
+      );
+    } else {
+      console.log(">>>> b");
+
+      usuarioOperacao.validarProtocolo(
+        usuarioSus,
+        dataQuality,
+        function (response) {
+          if (response.merge != null) {
+            // chama janela para mostrar janelas os dois registros
+            openModalMerge(response);
+            this.isProtocoloHomologacao = true;
+          } else if (response.usuario) {
+            gerarCartaoCadastro(response.usuario);
+          } else {
+            gerarCartaoCadastro(response);
+          }
+        },
+        function (erro) {
+          if (!erro) return false;
+
+          if (erro.errorNoAltToNew) {
+            criarJanelaIncluirNaoAlteracao(erro.msgErro);
+          }
+
+          if (erro.errorNoAltToOutroCad) {
+            criarJanelaNaoAlteracaOutroUsuario(erro.msgErro);
+          }
+        }
+      );
+    }
+
+    console.log(">>>> end gravar");
+    return false;
+  };
+
+  var timeoutDialog;
+
+  window.$.idleTimeout(timeoutDialog, "div.ui-dialog-buttonpane button:first", {
+    titleMessage: "",
+    idleAfter: 9999,
+    pollingInterval: 9999,
+    keepAliveURL: window.context + "restrito/manterSessaoAtiva.form",
+    serverResponseEquals: "OK",
+    onTimeout: () => {},
+    onIdle: () => {},
+    onCountdown: () => {},
+  });
+
+  // KEEP SESSION ALIVE
+  setInterval(() => {
+    window.$.ajax(
+      "https://cadastro.saude.gov.br/novocartao/restrito/manterSessaoAtiva.form"
+    ).then((response) => {
+      console.log("manterSessaoAtiva: ", response);
+    });
+  }, 30 * 1000);
 })();
