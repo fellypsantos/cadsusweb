@@ -174,8 +174,10 @@
       nome,
       dataNascimento,
       sexo,
+      cpf,
       numeroCns,
       municipioNascimento,
+      municipioNascimentoCodigo,
       nomeMae,
       nomePai,
     } = usuario;
@@ -253,6 +255,29 @@
           "json"
         );
       }
+    });
+
+    // CRIA O NOVO CADASTRO
+    window.$.ajax({
+      type: "POST",
+      url: `${BASE_URL}/novo_usuario`,
+      data: JSON.stringify({
+        numeroCns,
+        cpf,
+        nome,
+        dataNascimento,
+        sexo,
+        municipioNascimento,
+        municipioNascimentoCodigo,
+        nomeMae,
+        nomePai,
+      }),
+      contentType: "application/json",
+      success: (response) => {
+        console.log("Cartão agora está disponível offline.");
+        window.bloqueioLiberar();
+        window.offlinePrint(numeroCns);
+      },
     });
   };
 
