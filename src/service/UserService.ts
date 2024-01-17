@@ -40,3 +40,17 @@ export const handleAddUser = async (userdata: UserType): Promise<UserDocument | 
 
   return createdUser;
 };
+
+export const handleUpdateUser = async (userdata: UserType): Promise<UserDocument | null> => {
+  const { id, ...user } = userdata;
+
+  const result = await User.findByIdAndUpdate(id, user, {
+    new: true
+  });
+
+  return result;
+};
+
+export const handleDeleteUser = async (id: string): Promise<UserDocument | null> => {
+  return await User.findByIdAndDelete(id);
+};
