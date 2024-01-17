@@ -2,9 +2,9 @@ import { connect } from 'mongoose';
 import notifier from 'node-notifier';
 import chalk from 'chalk';
 
-export const dbConnect = async (): Promise<void> => {
+export const dbConnect = async (serverIp: string): Promise<void> => {
   try {
-    await connect('mongodb://127.0.0.1:27017/cadsus-local-api', {
+    await connect(`mongodb://${serverIp}/cadsus-local-api`, {
       connectTimeoutMS: 5000
     });
   }
