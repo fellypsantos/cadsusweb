@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import { findUserByCns } from './UserService';
 import { generateBarCode } from './BarCodeService';
+import Logger from './Logger';
 
 type CardUserData = {
   nome: string;
@@ -21,6 +22,11 @@ export const getUserDataToGenerateCards = async (cns: string): Promise<CardUserD
       console.log(chalk.bgRed(cnsNumber), 'Nao disponível offline.');
       continue;
     }
+
+    Logger(
+      chalk.bgGreen(`${user.numeroCns}`),
+      chalk.green('Recuperado da base local.')
+    );
 
     const { numeroCns, nome, dataNascimento, sexo, municipioNascimentoCodigo } = user;
     const barcode = await generateBarCode({ cns: cnsNumber, gender: sexo, cityCode: municipioNascimentoCodigo });
