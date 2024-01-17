@@ -12,6 +12,7 @@
   },
   "plugins": [
     "import",
+    "promise",
     "@typescript-eslint"
   ],
   "extends": [
@@ -44,6 +45,7 @@
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/naming-convention": "off",
     "@typescript-eslint/no-unused-vars": "warn",
+    "require-await": "error",
     "multiline-ternary": "off",
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/member-delimiter-style": [
