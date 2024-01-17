@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { findUserByCns } from '../service/UserService';
+import { findUserByCns, handleAddUser } from '../service/UserService';
 
 export const findUser = async (request: Request, response: Response): Promise<Response> => {
   const { cns } = request.params;
@@ -9,4 +9,12 @@ export const findUser = async (request: Request, response: Response): Promise<Re
   if (!user) return response.json(null);
 
   return response.json(user);
+};
+
+export const addUser = async (request: Request, response: Response): Promise<Response> => {
+
+  const result = await handleAddUser(request.body);
+
+  return response.send(result);
+
 };
