@@ -1,16 +1,8 @@
 import { Schema, model, Document, Model } from 'mongoose';
+import { type UserType } from '../../types/UserType';
 
 // Interface for user attributes
-interface UserAttributes {
-  numeroCns: string;
-  cpf?: string | null;
-  nome: string;
-  dataNascimento: string;
-  sexo: string;
-  municipioNascimento: string;
-  municipioNascimentoCodigo: string;
-  nomeMae?: string | null;
-  nomePai?: string | null;
+type UserAttributes = UserType & {
   createdAt: Date;
 }
 
