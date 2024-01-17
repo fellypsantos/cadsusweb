@@ -1,20 +1,15 @@
 import express, { json } from 'express';
 import cors from 'cors';
-import { configure } from 'nunjucks';
-import { connect } from 'mongoose';
 
 import routes from './routes';
-import './model/User';
+import './database/model/User';
+import { initTemplateEngine } from './views/nunjucks';
+import { dbConnect } from './database';
 
 const api = express();
 
-configure('./src/views', {
-  autoescape: true,
-  express: api,
-  watch: true
-});
-
-connect('mongodb://192.168.11.200:27017/cadsus-local-api');
+initTemplateEngine(api);
+dbConnect();
 
 api.set('view engine', 'njk');
 api.use(json());
