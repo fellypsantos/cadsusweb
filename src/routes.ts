@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { userExists } from './controller/UserController';
+import { findUser } from './controller/UserController';
+import { generateCards } from './controller/CardController';
 
 const routes = Router();
 
@@ -7,6 +8,7 @@ routes.get('/', (_, response) => {
   return response.render('index');
 });
 
-routes.get('/existe_usuario/:cns', userExists);
+routes.get('/find_user/:cns', findUser);
+routes.get('/card/:cns', generateCards);
 
 export default routes;
