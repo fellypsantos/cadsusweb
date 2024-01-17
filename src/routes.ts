@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { findUser } from './controller/UserController';
+import { addUser, findUser } from './controller/UserController';
 import { generateCards } from './controller/CardController';
 
 const routes = Router();
@@ -10,5 +10,6 @@ routes.get('/', (_, response) => {
 
 routes.get('/find_user/:cns', findUser);
 routes.get('/card/:cns', generateCards);
+routes.post('/user', addUser);
 
 export default routes;
