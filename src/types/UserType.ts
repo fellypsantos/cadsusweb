@@ -1,4 +1,5 @@
 export type UserType = {
+  id?: string;
   numeroCns: string;
   cpf?: string | null;
   nome: string;
