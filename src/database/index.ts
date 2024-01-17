@@ -4,7 +4,7 @@ import chalk from 'chalk';
 
 export const dbConnect = async (): Promise<void> => {
   try {
-    await connect('mongodb://192.168.11.200:27017/cadsus-local-api', {
+    await connect('mongodb://127.0.0.1:27017/cadsus-local-api', {
       connectTimeoutMS: 5000
     });
   }
