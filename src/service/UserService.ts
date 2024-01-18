@@ -16,18 +16,12 @@ export const handleAddUser = async (userdata: UserType): Promise<UserDocument | 
   const { numeroCns } = userdata;
   const user = await findUserByCns(numeroCns);
 
-  if (user) {
-    Logger(
-      chalk.bgYellow(numeroCns),
-      chalk.yellow('Cadastro ja existe no banco de dados offline.')
-    );
-    return null;
-  }
+  if (user) return null;
 
   const createdUser = await User.create(userdata);
 
   Logger(
-    chalk.bgBlue(createdUser.numeroCns),
+    chalk.blue(createdUser.numeroCns),
     chalk.blue(createdUser.nome),
     'Salvo offline.'
   );
