@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { addUser, findUser, updateUser } from './controller/UserController';
-import { generateCards } from './controller/CardController';
-import { handleDeleteUser } from './service/UserService';
-import { getUserScriptContent } from './controller/UserscriptController';
+import { addUser, findUser, updateUser } from '../controller/UserController';
+import { generateCards } from '../controller/CardController';
+import { handleDeleteUser } from '../service/UserService';
+import { getUserScriptContent } from '../controller/UserscriptController';
 
 const routes = Router();
 
