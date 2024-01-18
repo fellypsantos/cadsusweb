@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 
 const Logger = (...text: string[]): void => {
   console.log(
-    chalk.blueBright(format(new Date(), 'p')),
+    chalk.blueBright(`[${format(new Date(), 'p')}]`),
     ...text
   );
 };
