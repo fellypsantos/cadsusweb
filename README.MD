@@ -2,6 +2,8 @@
 
 Este projeto NodeJS foi desenvolvido para criar um servidor local que gerencia operações CRUD (Create, Read, Update, Delete) de dados, utilizando um banco de dados MongoDB para armazenamento offline dos Cartões do SUS emitidos na nossa Secretaria Municipal de Saúde. Além disso, inclui um userscript para instalação na extensão Tampermonkey.
 
+![bg-graphics-header](https://github.com/fellypsantos/cadsusweb/assets/11094932/1caccdf0-27e6-4a7c-94ab-5305def8ccf3)
+
 ## Objetivo
 
 O projeto foi concebido para atender à demanda por segundas vias de cartões, mesmo em situações de internet instável ou offline. A solução proposta envolve a criação de um cache local para armazenar os dados dos cartões, permitindo a emissão de segundas vias sem acesso à internet, contanto que os dados já tenham sido previamente salvos no banco local.
