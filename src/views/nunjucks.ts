@@ -1,10 +1,9 @@
 import { Express } from 'express';
 import { configure } from 'nunjucks';
-import path from 'path';
+import { getAbsolutePath } from '../helper/pathHelper';
 
 export const initTemplateEngine = (express: Express): void => {
-  const rootDir = process.env.NODE_ENV === 'production' ? process.cwd() : path.join(process.cwd(), 'src');
-  const viewsPath = path.join(rootDir, 'views');
+  const viewsPath = getAbsolutePath('views');
 
   configure(viewsPath, {
     autoescape: true,
