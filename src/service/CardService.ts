@@ -24,7 +24,7 @@ export const getUserDataToGenerateCards = async (cns: string): Promise<CardUserD
     }
 
     Logger(
-      chalk.bgGreen(`${user.numeroCns}`),
+      chalk.green(`${user.numeroCns}`),
       chalk.green('Recuperado da base local.')
     );
 
