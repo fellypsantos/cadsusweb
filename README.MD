@@ -8,6 +8,14 @@ O projeto foi concebido para atender à demanda por segundas vias de cartões, m
 
 Além disso, o projeto aborda o desperdício de papel ao possibilitar a impressão de múltiplos cartões em uma única folha, otimizando o processo e reduzindo a quantidade de papel utilizada.
 
+## Recursos
+
+- Três botões adicionais para controle de fila de impressão.
+- Exclusão de cartões fila.
+- Impressão de até quatro cartões na mesma folha.
+- Fila de impressão implementada em localStorage.
+- Página de impressão com listagem de todos os cartões que estão em fila.
+
 ## Pré Requisitos
 
 Certifique-se de ter as seguintes dependências instaladas:
