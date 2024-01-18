@@ -1,6 +1,9 @@
 import { connect } from 'mongoose';
 import notifier from 'node-notifier';
 import chalk from 'chalk';
+import fs from 'fs/promises';
+import { parse } from 'ini';
+import { getAbsolutePath } from '../helper/pathHelper';
 
 export const dbConnect = async (serverIp: string): Promise<void> => {
   try {
@@ -22,4 +25,23 @@ export const dbConnect = async (serverIp: string): Promise<void> => {
 
     setTimeout(() => process.exit(), 3000);
   }
+};
+
+export type MongoDBSettings = {
+  serverIp: string;
+}
+
+export const getMongoDbSettings = async (): Promise<MongoDBSettings | null> => {
+  try {
+    const iniFilePath = getAbsolutePath('mongodb.ini');
+    const data = await fs.readFile(iniFilePath, 'utf-8');
+    const config = parse(data);
+
+    return { serverIp: config.SERVER_IP };
+  } catch (err) {
+    const error = err as Error;
+    console.error(`Error reading INI file: ${error.message}`);
+  }
+
+  return null;
 };
