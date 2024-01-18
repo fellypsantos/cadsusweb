@@ -19,7 +19,7 @@ export const getUserDataToGenerateCards = async (cns: string): Promise<CardUserD
     const user = await findUserByCns(cnsNumber);
 
     if (!user) {
-      console.log(chalk.bgRed(cnsNumber), 'Nao disponível offline.');
+      Logger(chalk.red(cnsNumber), 'Nao disponível offline.');
       continue;
     }
 
