@@ -1,6 +1,10 @@
 # CADSUSWEB - Aprimoramentos
 
+![bg-graphics-header](https://github.com/fellypsantos/cadsusweb/assets/11094932/1caccdf0-27e6-4a7c-94ab-5305def8ccf3)
+
 Este projeto NodeJS foi desenvolvido para criar um servidor local que gerencia operações CRUD (Create, Read, Update, Delete) de dados, utilizando um banco de dados MongoDB para armazenamento offline dos Cartões do SUS emitidos na nossa Secretaria Municipal de Saúde. Além disso, inclui um userscript para instalação na extensão Tampermonkey.
+
+![server-running](https://github.com/fellypsantos/cadsusweb/assets/11094932/c8b2f6e2-a2a4-4d8b-a081-f1498eb007b8)
 
 ## Objetivo
 
@@ -15,6 +19,8 @@ Além disso, o projeto aborda o desperdício de papel ao possibilitar a impress�
 - Impressão de até quatro cartões na mesma folha.
 - Fila de impressão implementada em localStorage.
 - Página de impressão com listagem de todos os cartões que estão em fila.
+
+![multi-card-print](https://github.com/fellypsantos/cadsusweb/assets/11094932/6b0b2a5c-fd8d-46f8-88aa-d75c06db58ea)
 
 ## Pré Requisitos
 
