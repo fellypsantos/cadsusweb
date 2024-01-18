@@ -6,6 +6,6 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   loader: {
-    '.njk': 'file'
+    '.njk': 'copy'
   }
 });
