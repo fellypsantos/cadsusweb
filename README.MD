@@ -4,7 +4,9 @@
 
 Este projeto NodeJS foi desenvolvido para criar um servidor local que gerencia operações CRUD (Create, Read, Update, Delete) de dados, utilizando um banco de dados MongoDB para armazenamento offline dos Cartões do SUS emitidos na nossa Secretaria Municipal de Saúde. Além disso, inclui um userscript para instalação na extensão Tampermonkey.
 
-![server-running](https://github.com/fellypsantos/cadsusweb/assets/11094932/c8b2f6e2-a2a4-4d8b-a081-f1498eb007b8)
+<!-- ![server-running](https://github.com/fellypsantos/cadsusweb/assets/11094932/c8b2f6e2-a2a4-4d8b-a081-f1498eb007b8) -->
+
+![server-running](https://github.com/fellypsantos/cadsusweb/assets/11094932/e906f93d-d779-4ad4-8772-aea9533c62ef)
 
 ## Objetivo
 
@@ -54,17 +56,35 @@ net:
 
 ## Instalação
 
-1.  Na pasta do projeto, modifique o arquivo `mongodb.ini`, ajustando a propriedade `SERVER_IP` nas outras máquinas em rede para conter o IP da máquina principal que contém o MongoDB Server.
+1. Na pasta do projeto, modifique o arquivo `mongodb.ini`, ajustando a propriedade `SERVER_IP` nas outras máquinas em rede para conter o IP da máquina principal que contém o MongoDB Server.
+2. Na máquina principal, não é necessário modificar a configuração de IP do servidor.
+3. Execute o arquivo `SERVER.bat`.
+4. Dois endereços serão exibidos no terminal:
 
-2.  Na máquina principal, não é necessário modificar a configuração de IP do servidor.
+   - O primeiro mostra o IP usado para conectar ao MongoDB Server.
+   - O segundo é o endereço para instalar o userscript no Tampermonkey.
 
-3.  Execute o arquivo `SERVER.bat`.
+5. Acesse o segundo endereço no navegador para instalar o script.
+6. Pronto, tudo deve estar funcionando corretamente. Agora você pode utilizar o sistema CRUD e visualizar os dados no MongoDB Compass, se instalado.
 
-4.  Dois endereços serão exibidos no terminal:
+## Resumo dos Desafios Técnicos
 
-    - O primeiro mostra o IP usado para conectar ao MongoDB Server.
-    - O segundo é o endereço para instalar o userscript no Tampermonkey.
+O projeto enfrentou desafios técnicos significativos, abordados em diferentes etapas.
 
-5.  Acesse o segundo endereço no navegador para instalar o script.
+#### Persistência de Dados
 
-6.  Pronto, tudo deve estar funcionando corretamente. Agora você pode utilizar o sistema CRUD e visualizar os dados no MongoDB Compass, se instalado.
+A escolha do MongoDB para armazenamento local de dados foi baseada em sua simplicidade de instalação e uso. O desafio subsequente foi integrar os dados pesquisados no site CadSusWeb ao banco local. A solução envolveu a criação de scripts usando a extensão Tampermonkey para manipular conexões e elementos na página, permitindo a transferência dos dados para o banco MongoDB.
+
+#### Conexão do Site com o Banco Local
+
+A abordagem adotada foi a utilização da extensão Tampermonkey para injetar scripts nas páginas do site durante o carregamento. Isso permitiu a manipulação de conexões e elementos na tela, recriando janelas modais, adicionando botões e interceptando os dados de pesquisa para salvá-los no banco local. Essa abordagem manteve a identidade visual do CadSUS.
+
+#### Servidor Local
+
+Para facilitar a integração com o MongoDB, foi escolhido `Node.js` com `Express` para criar um servidor local. Esse servidor atuou como intermediário entre o script Tampermonkey e o banco de dados, gerenciando solicitações do CadSUS, verificando a existência de pacientes, salvando novos pacientes localmente e fornecendo acesso ao userscript.
+
+#### Limitações
+
+Por questões de segurança, o script Tampermonkey enfrentou limitações ao realizar requisições HTTP para endereços IP e não HTTPS. Isso exigiu que o servidor Node.js fosse executado em todas as máquinas, já que o script só conseguia fazer requisições para o localhost. A ideia inicial de centralizar o banco de dados e o servidor em um computador principal foi inviabilizada, resultando na necessidade de ter o servidor Node em todas as máquinas para contornar as limitações de segurança.
+
+![syste-architecture ](https://github.com/fellypsantos/cadsusweb/assets/11094932/79af7814-ad81-4e82-aae8-5ed9b095929e)

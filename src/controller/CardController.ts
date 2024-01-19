@@ -7,3 +7,7 @@ export const generateCards = async (request: Request, response: Response): Promi
 
   response.render('card', { cardsData });
 };
+
+export const renderSearchCard = (_: Request, response: Response): void => {
+  response.render('search');
+};
