@@ -1,5 +1,4 @@
 import { connect } from 'mongoose';
-import notifier from 'node-notifier';
 import chalk from 'chalk';
 import fs from 'fs/promises';
 import { parse } from 'ini';
@@ -16,12 +15,6 @@ export const dbConnect = async (serverIp: string): Promise<void> => {
     const message = 'Não foi possível conectar ao banco de dados.';
 
     console.log(chalk.bgRed(message, error.message));
-
-    notifier.notify({
-      title: 'Conexão Falhou!',
-      message: message,
-      sound: false
-    });
 
     setTimeout(() => process.exit(), 3000);
   }
