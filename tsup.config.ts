@@ -3,12 +3,12 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: ['src/index.ts'],
   splitting: false,
-  sourcemap: true,
+  sourcemap: false,
   clean: true,
-  minify: true,
+  minify: false,
   bundle: true,
   format: ['cjs'],
-  noExternal: ['bwip-js', 'chalk', 'cors', 'date-fns', 'express', 'ini', 'mongoose', 'node-notifier', 'nunjucks'],
+  noExternal: ['bwip-js', 'chalk', 'cors', 'date-fns', 'express', 'ini', 'keypress', 'mongoose', 'nunjucks', 'openurl', 'tty'],
   loader: {
     '.njk': 'copy',
     '.ini': 'copy',
