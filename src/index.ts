@@ -1,5 +1,6 @@
-import express, { json } from 'express';
+import express, { json, static as staticDirectory } from 'express';
 import cors from 'cors';
+import chalk from 'chalk';
 import routes from './routes';
 
 import './datefns';
@@ -7,7 +8,8 @@ import './database/model/User';
 
 import { initTemplateEngine } from './views/nunjucks';
 import { dbConnect, getMongoDbSettings } from './database';
-import chalk from 'chalk';
+import { getAbsolutePath } from './helper/pathHelper';
+import { showMenu } from './service/MenuService';
 
 const initSystem = async (): Promise<void> => {
   const api = express();
@@ -22,6 +24,7 @@ const initSystem = async (): Promise<void> => {
   initTemplateEngine(api);
 
   api.set('view engine', 'njk');
+  api.use(staticDirectory(getAbsolutePath('public')));
   api.use(json());
   api.use(cors());
   api.use(routes);
@@ -31,7 +34,10 @@ const initSystem = async (): Promise<void> => {
     console.log(chalk.yellow('..:: Não feche essa janela ::..'), '\n');
 
     console.log(`   MongoDB: http://${dbSettings.serverIp}:27017`);
-    console.log('Userscript: http://localhost:7125/script.user.js', '\n\n');
+    console.log(chalk.cyan('Userscript: http://localhost:7125/script.user.js'));
+    console.log(chalk.green('  Pesquisa: http://localhost:7125/search'), '\n\n');
+
+    showMenu();
   });
 };
 
