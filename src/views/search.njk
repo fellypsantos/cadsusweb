@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesquisa Offline</title>
+
+  <link href="bootstrap/style.css" rel="stylesheet" type="text/css"/>
+
+  <style type="text/css">
+    .box {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .search-result {
+      margin-top: 15px;
+      padding: 0px;
+      list-style: none;
+    }
+
+    .search-result-item {
+      display: block;
+      background-color: #333;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      transition: all .1s ease;
+      color: var(--light-v2);
+      padding: 10px 15px;
+      border-left: 5px solid #333;
+    }
+
+    .search-result-item:hover {
+      background-color: #444;
+      transform: scale(1.01);
+      text-decoration: none;
+      color: var(--light-v2);
+      border-left: 5px solid var(--success);
+    }
+
+    .card-number, .card-owner-name {
+      display: block;
+      padding: 0px;
+      color: #ccc;
+    }
+
+    .card-owner-name {
+      margin-bottom: 0px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="container mt-3">
+
+      <div class="row">
+        <div class="col">
+          <form onsubmit="handleSubmit(event)" autocomplete="off" onreset="clearSearchResult()">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" placeholder="Buscar por nome ou número do cartão." id="search-content">
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Pesquisar</button>
+                <button class="btn btn-danger" type="reset">Limpar</button>
+              </div>
+            </div>
+          </form>
+
+          <p id="loading-message" class="d-none">Carregando...</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+            <ul class="search-result" id="search-result"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const searchResultContainer = document.getElementById('search-result');
+    const loadingMessage = document.getElementById('loading-message');
+
+    function formattedCNS(cns) {
+      return cns.replace(/^(\d{3})(\d{4})(\d{4})(\d{4})/, '$1 $2 $3 $4');
+    }
+
+    function renderSearchResultItems(searchResult) {
+      const searchResultItems = [];
+
+      searchResult.forEach(item => {
+        searchResultItems.push(`
+          <li>
+            <a href="http://localhost:7125/card/${item.numeroCns}" class="search-result-item">
+              <strong class="card-number">${formattedCNS(item.numeroCns)}</strong>
+              <h5 class="card-owner-name">${item.nome}</h5>
+            </a>
+          </li>
+        `);
+      });
+
+      searchResultContainer.innerHTML = searchResultItems.join('');
+    }
+
+    function handleSubmit(event) {
+      event.preventDefault();
+
+      const searchContent = document.getElementById('search-content').value;
+
+      loadingMessage.className = 'd-block';
+
+      fetch('http://localhost:7125/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ searchContent })
+      })
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          renderSearchResultItems(data);
+        })
+        .catch(err => {
+          console.error(err);
+          alert(err.message);
+        })
+        .finally(() => {
+          loadingMessage.className = 'd-none';
+        })
+    }
+
+    function clearSearchResult(){
+      searchResultContainer.innerHTML = '';
+    }
+  </script>
+</body>
+</html>
