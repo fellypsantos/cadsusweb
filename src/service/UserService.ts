@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import notifier from 'node-notifier';
 import User, { UserDocument } from '../database/model/User';
 import Logger from './Logger';
 import { UserType } from '../types/UserType';
@@ -26,12 +25,6 @@ export const handleAddUser = async (userdata: UserType): Promise<UserDocument | 
     'Salvo offline.'
   );
 
-  notifier.notify({
-    title: 'CADSUS Local',
-    message: 'Usuário foi salvo offline.',
-    sound: false
-  });
-
   return createdUser;
 };
 
@@ -47,4 +40,19 @@ export const handleUpdateUser = async (userdata: UserType): Promise<UserDocument
 
 export const handleDeleteUser = async (id: string): Promise<UserDocument | null> => {
   return await User.findByIdAndDelete(id);
+};
+
+const isCnsNumber = (text: string): boolean => {
+  const regex = new RegExp('[0-9]{15}');
+  return regex.test(text);
+};
+
+export const handleSearchUser = async (searchContent: string): Promise<UserDocument[] | null> => {
+  if (isCnsNumber(searchContent)) {
+    return await User.find({ numeroCns: searchContent });
+  }
+
+  return await User
+    .find({ nome: { $regex: new RegExp(searchContent, 'i') } })
+    .sort({ nome: 'asc' });
 };
