@@ -59,13 +59,13 @@ net:
 1. Na pasta do projeto, modifique o arquivo `mongodb.ini`, ajustando a propriedade `SERVER_IP` nas outras máquinas em rede para conter o IP da máquina principal que contém o MongoDB Server.
 2. Na máquina principal, não é necessário modificar a configuração de IP do servidor.
 3. Execute o arquivo `SERVER.bat`.
-4. Dois endereços serão exibidos no terminal:
-
+4. Três endereços serão exibidos no terminal:
    - O primeiro mostra o IP usado para conectar ao MongoDB Server.
    - O segundo é o endereço para instalar o userscript no Tampermonkey.
-
-5. Acesse o segundo endereço no navegador para instalar o script.
-6. Pronto, tudo deve estar funcionando corretamente. Agora você pode utilizar o sistema CRUD e visualizar os dados no MongoDB Compass, se instalado.
+   - O terceiro abre a página de pesquisa para buscar cartões no banco offline.
+5. O console acompanha um pequeno menú acessível através dos respectivos números.
+6. Por exemplo, pressione o número `2` para abrir a página de instalação o script.
+7. Pronto, tudo deve estar funcionando corretamente. Agora você pode utilizar o sistema CRUD e visualizar os dados no MongoDB Compass, se instalado.
 
 ## Resumo dos Desafios Técnicos
 
