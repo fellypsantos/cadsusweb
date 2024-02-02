@@ -10,6 +10,7 @@ import { initTemplateEngine } from './views/nunjucks';
 import { dbConnect, getMongoDbSettings } from './database';
 import { getAbsolutePath } from './helper/pathHelper';
 import { showMenu } from './service/MenuService';
+import Logger from './service/Logger';
 
 const initSystem = async (): Promise<void> => {
   const api = express();
@@ -41,4 +42,9 @@ const initSystem = async (): Promise<void> => {
   });
 };
 
-initSystem();
+try {
+  initSystem();
+} catch (err) {
+  const error = err as Error;
+  Logger('Ocorreu um erro: ', error.message);
+}
