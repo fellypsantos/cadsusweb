@@ -18,7 +18,7 @@ export const handleAddUser = async (userdata: UserType): Promise<UserDocument | 
 
     if (user) return null;
 
-    const createdUser = await User.create(userdata);
+    const createdUser = await User.create({ ...userdata, nome: userdata.nome.toUpperCase() });
 
     Logger(
       chalk.blue(createdUser.numeroCns),
