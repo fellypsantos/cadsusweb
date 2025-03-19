@@ -2,6 +2,8 @@ import express, { json, static as staticDirectory } from 'express';
 import cors from 'cors';
 import chalk from 'chalk';
 import routes from './routes';
+import http from 'http';
+import { Server } from 'socket.io';
 
 import './datefns';
 import './database/model/User';
@@ -41,4 +43,27 @@ const initSystem = async (): Promise<void> => {
   });
 };
 
-initSystem();
+// initSystem();
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { origin: '*' } // Allow all origins (or specify if needed)
+});
+
+io.on('connection', (socket) => {
+  console.log('Client connected:', socket.id);
+
+  // socket.on('ping', () => {
+  //   console.log('Received: ping');
+  //   socket.emit('pong');
+  // });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+  });
+});
+
+server.listen(3000, () => {
+  console.log('WebSocket server running on ws://localhost:3000');
+});
