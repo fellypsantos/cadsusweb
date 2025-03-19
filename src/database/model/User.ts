@@ -18,10 +18,6 @@ const UserSchema = new Schema<UserDocument, UserModel>({
     type: String,
     required: true
   },
-  cpf: {
-    type: String,
-    required: false
-  },
   nome: {
     type: String,
     required: true
@@ -31,10 +27,6 @@ const UserSchema = new Schema<UserDocument, UserModel>({
     required: true
   },
   sexo: {
-    type: String,
-    required: true
-  },
-  municipioNascimento: {
     type: String,
     required: true
   },

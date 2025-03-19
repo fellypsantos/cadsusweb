@@ -66,4 +66,5 @@ export const showMenu = (): void => {
   input.resume();
 
   console.log(chalk.green('\n\n--- LOG ---'));
+  Logger('Sistema iniciado.');
 };

@@ -12,34 +12,55 @@ export const findUserByCns = async (numeroCns: string): Promise<UserDocument | n
 };
 
 export const handleAddUser = async (userdata: UserType): Promise<UserDocument | null> => {
-  const { numeroCns } = userdata;
-  const user = await findUserByCns(numeroCns);
+  try {
+    const { numeroCns } = userdata;
+    const user = await findUserByCns(numeroCns);
 
-  if (user) return null;
+    if (user) return null;
 
-  const createdUser = await User.create(userdata);
+    const createdUser = await User.create({ ...userdata, nome: userdata.nome.toUpperCase() });
 
-  Logger(
-    chalk.blue(createdUser.numeroCns),
-    chalk.blue(createdUser.nome),
-    'Salvo offline.'
-  );
+    Logger(
+      chalk.blue(createdUser.numeroCns),
+      chalk.blue(createdUser.nome),
+      'Salvo offline.'
+    );
 
-  return createdUser;
+    return createdUser;
+  }
+  catch (err) {
+    const error = err as Error;
+    Logger('Falha ao salvar os dados no banco local: ', error.message);
+    return null;
+  }
 };
 
 export const handleUpdateUser = async (userdata: UserType): Promise<UserDocument | null> => {
-  const { id, ...user } = userdata;
+  try {
+    const { id, ...user } = userdata;
 
-  const result = await User.findByIdAndUpdate(id, user, {
-    new: true
-  });
+    const result = await User.findByIdAndUpdate(id, user, {
+      new: true
+    });
 
-  return result;
+    return result;
+  }
+  catch (err) {
+    const error = err as Error;
+    Logger('Falha ao atualizar os dados no banco local: ', error.message);
+    return null;
+  }
 };
 
 export const handleDeleteUser = async (id: string): Promise<UserDocument | null> => {
-  return await User.findByIdAndDelete(id);
+  try {
+    return await User.findByIdAndDelete(id);
+  }
+  catch (err) {
+    const error = err as Error;
+    Logger('Falha ao remover um usuário do banco local: ', error.message);
+    return null;
+  }
 };
 
 const isCnsNumber = (text: string): boolean => {
