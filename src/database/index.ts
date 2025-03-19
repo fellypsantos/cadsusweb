@@ -7,9 +7,13 @@ import Logger from '../service/Logger';
 
 export const dbConnect = async (serverIp: string): Promise<void> => {
   try {
-    await connect(`mongodb://${serverIp}/cadsus-local-api`, {
-      connectTimeoutMS: 5000
+    const connectionUrl = `mongodb://${serverIp}/cadsus-local-api`;
+
+    await connect(connectionUrl, {
+      connectTimeoutMS: 5000,
     });
+
+    console.log("MongoDB connected!");
   }
   catch (err) {
     const error = err as Error;
