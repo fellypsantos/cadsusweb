@@ -48,27 +48,11 @@
   };
 
   window.solicitarDialogoGerarCartao = (usuario) => {
-    console.log('solicitarDialogoGerarCartao');
-
     if (typeof usuario !== 'object') {
       usuario = JSON.parse(atob(usuario));
     }
 
-    const {
-      nome,
-      dataNascimento,
-      sexo,
-      cpf,
-      numeroCns,
-      municipioNascimento,
-      municipioNascimentoCodigo,
-      nomeMae,
-      nomePai
-    } = usuario;
-
-    // FIRE WEBSOCKET EVENT TO ALWAYS SAVE THE UPDATED DATA FOR THIS USER IN LOCAL DATABASE
-    // The response event should show the popup window to ask about add to queue or print directly
-    console.log(numeroCns, nome);
+    socket.emit('sync_user', usuario);
   };
 
   // Connect to WebSocket server
@@ -78,10 +62,9 @@
     console.log('Connected to WebSocket server');
   });
 
-  // Listen for pong response
-  // socket.on('pong', () => {
-  //     console.log("Received: pong");
-  // });
+  socket.on('sync_completed', (userdata) => {
+    console.log('sync_completed', userdata);
+  });
 
   socket.on('disconnect', () => {
     console.warn('Disconnected from WebSocket server');
