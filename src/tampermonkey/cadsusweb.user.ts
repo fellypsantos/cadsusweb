@@ -66,6 +66,8 @@
       nomePai
     } = usuario;
 
+    // FIRE WEBSOCKET EVENT TO ALWAYS SAVE THE UPDATED DATA FOR THIS USER IN LOCAL DATABASE
+    // The response event should show the popup window to ask about add to queue or print directly
     console.log(numeroCns, nome);
   };
 
