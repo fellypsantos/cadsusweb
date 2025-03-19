@@ -12,24 +12,25 @@
 // @grant        none
 // ==/UserScript==
 
+import { showStack } from './sample';
+
 (function () {
   'use strict';
 
-  const HOST = 'localhost';
-  const PORT = 7125;
-  const BASE_URL = `http://${HOST}:${PORT}`;
+  const HOST: string = 'localhost';
+  const PORT: number = 7125;
+  const BASE_URL: string = `http://${HOST}:${PORT}`;
 
-  const mainForm = window.$('form').eq(0);
-  const getStack = () => JSON.parse(localStorage.getItem('fila_cartoes'));
-  const setStack = (data) =>
-    localStorage.setItem('fila_cartoes', JSON.stringify(data));
+  const mainForm: JQuery = $('form').eq(0);
+  const getStack = (): string[] => JSON.parse(localStorage.getItem('fila_cartoes') || '[]');
+  const setStack = (data: string[]) => localStorage.setItem('fila_cartoes', JSON.stringify(data));
 
-  const setStackCounterValue = (value) =>
-    window.$('#stack-counter').text(value.toString());
+  const setStackCounterValue = (value: number) =>
+    $('#stack-counter').text(value.toString());
 
-  window.deleteFromStack = (cns) => {
-    let stack = getStack();
-    let newStack = stack.filter((item) => item != cns);
+  window.deleteFromStack = (cns: string): boolean => {
+    const stack: string[] = getStack();
+    const newStack: string[] = stack.filter((item) => item !== cns);
 
     setStack(newStack);
     setStackCounterValue(newStack.length);
@@ -37,47 +38,36 @@
     return false;
   };
 
-  window.showStack = () => {
-    window.$('#stack-diag').dialog({ width: 450, height: 250 });
-    window.$('#tbl-stack-diag tbody').html('');
+  //SAMPLE
+  showStack(getStack());
+  //SAMPLE
 
-    let stack = getStack();
-    stack.forEach((cns) => {
-      window.$('#tbl-stack-diag tbody').append(`
-      <tr>
-        <th scope="col">${cns}</th>
-        <th scope="col" class="text-center">
-        <a href="#!" onClick="javascript:deleteFromStack(${cns})" class="btn-sm btn-danger">Excluir</a>
-        </th>
-      </tr>`);
-    });
-  };
 
-  window.clearStack = () => {
+  window.clearStack = (): void => {
     if (window.confirm('Limpar a fila atual ?')) {
       setStack([]);
       setStackCounterValue(0);
     }
   };
 
-  window.printStack = () => {
-    let fila = getStack();
+  window.printStack = (): void => {
+    const fila: string[] = getStack();
     console.log('enviar get com a lista de cartões', JSON.stringify(fila));
     window.open(`${BASE_URL}/card/${fila.join(',')}`);
   };
 
-  // 3 ADITIONAL BUTTONS
+  // Additional buttons
   mainForm.append(`<div class="row text-center btnFooter icoNone">
     <button class="btn btn-success" onClick="javascript:printStack(); return false;">Imprimir Fila</button>
     <button class="btn btn-primary" onClick="javascript:showStack(); return false;">Mostrar Fila</button>
     <button class="btn btn-danger" onClick="javascript:clearStack(); return false;">Limpar Fila</button></div>`);
 
-  // STACK COUNTER
+  // Stack Counter
   mainForm.append(
     '<h6 class="text-center">Cartões na fila: <span class="badge badge-secondary" id="stack-counter">-</span></h6>'
   );
 
-  // HTML FOR ACTION DIALOG
+  // HTML for Action Dialog
   mainForm.append(`<div id="stack-confirmation" title="Cartão pronto para impressão.">
     <h4>
       <span class="ui-icon ui-icon-print" style="float:left; margin:12px 12px 20px 0;"></span>
@@ -85,7 +75,7 @@
     </h4>
     </div>`);
 
-  // ACTION DIALOG WHEN CARD IS READY TO PRINT
+  // Action Dialog when Card is Ready to Print
   mainForm.append(`<div id="stack-diag" title="Fila de Impressão Atual">
       <table class="table table-dark" id="tbl-stack-diag">
         <thead>
@@ -98,44 +88,44 @@
         </table>
       </div>`);
 
-  window.cadsuswebPlugin_Init = () => {
-    window.$('#stack-diag').hide();
-    window.$('#stack-confirmation').hide();
-    if (getStack() == null) {
+  window.cadsuswebPlugin_Init = (): void => {
+    $('#stack-diag').hide();
+    $('#stack-confirmation').hide();
+    if (getStack().length === 0) {
       setStack([]);
     }
     setStackCounterValue(getStack().length);
   };
 
-  // INITIALIZE
+  // Initialize
   window.cadsuswebPlugin_Init();
 
-  window.offlinePrint = (cns) => {
-    window.$('#stack-confirmation').dialog({
+  window.offlinePrint = (cns: string): void => {
+    $('#stack-confirmation').dialog({
       width: 400,
       resizable: false,
       buttons: {
         'Adicionar na fila': () => {
-          let stack = getStack();
-          if (stack.indexOf(cns) == -1) {
+          const stack: string[] = getStack();
+          if (stack.indexOf(cns) === -1) {
             stack.push(cns);
             setStackCounterValue(stack.length);
             setStack(stack);
           }
 
-          window.$('#stack-confirmation').dialog('close');
+          $('#stack-confirmation').dialog('close');
         },
 
         'Imprimir agora': () => {
-          window.$('#stack-confirmation').dialog('close');
+          $('#stack-confirmation').dialog('close');
           window.open(`${BASE_URL}/card/${cns}`);
         }
       }
     });
   };
 
-  window.gerarCartaoCadastro = (user) => {
-    var urlRetorno = 'usuarioConsulta.jsp';
+  window.gerarCartaoCadastro = (user: any): void => {
+    let urlRetorno: string = 'usuarioConsulta.jsp';
     if (user.numeroProtocoloPrecadastro || user.protocoloPrimeiroAcesso) {
       urlRetorno = 'usuarioConsultaProtocolo.jsp';
     }
@@ -145,25 +135,18 @@
 
     window.dialogoGerarCartao(
       urlRetorno,
-      JSON.toBase64(user),
+      btoa(JSON.stringify(user)),
       'Voltar para a consulta',
       function () {
         window.bloqueioAguarde();
-        window.$(window).unbind('beforeunload');
+        $(window).unbind('beforeunload');
         window.location.href = urlRetorno;
       },
       'ui-icon-arrowrefresh-1-w'
     );
   };
 
-  window.solicitarDialogoGerarCartao = (usuario) => {
-    /**
-     *  usuario -> pode vir como string base64 ou object
-     *
-     *  base64 -> quando vier da tela de cadastro
-     *  object -> quando vier da tela de consulta
-     */
-
+  window.solicitarDialogoGerarCartao = (usuario: any): void => {
     console.log('solicitarDialogoGerarCartao');
 
     if (typeof usuario !== 'object') {
@@ -182,41 +165,32 @@
       nomePai
     } = usuario;
 
-    // verificar se o usuario existe
-    window.$.get(`${BASE_URL}/user/${numeroCns}`, (response) => {
+    // Check if the user exists
+    $.get(`${BASE_URL}/user/${numeroCns}`, (response) => {
       if (response !== null) {
-        // tem dado
+        // Data found
         console.log('Recuperado da base de dados offline.');
         window.offlinePrint(numeroCns);
       } else {
         window.bloqueioPesquisa();
-        // pede dados extras e salva
         console.log('Coletando dados para salvar offline...');
-        window.$.post(
+        $.post(
           'https://cadastro.saude.gov.br/novocartao/restrito/consultar/visualizar.form',
           { cns: numeroCns },
           (responseExtraData) => {
             console.log('Dados coletados');
 
-            const { cpf, municipioNascimentoCodigo, cartoesAgregados } =
-              responseExtraData;
+            const { cpf, municipioNascimentoCodigo, cartoesAgregados } = responseExtraData;
 
-            let myCards = cartoesAgregados.filter(
-              (cns) => cns.tipo === 'Provisório'
-            );
+            const myCards = cartoesAgregados.filter((cns: any) => cns.tipo === 'Provisório');
 
-            myCards.forEach((card) => {
-              // verificar se os cartões provisórios estão no banco
-              // deleta se existir, pra não duplicar cadastros
-              window.$.get(
+            myCards.forEach((card: any) => {
+              $.get(
                 `${BASE_URL}/user/${card.cns}`,
                 (responseTempCard) => {
                   if (responseTempCard !== null) {
-                    // encontrou cartão do usuário, com número provisório
-                    // delete o encontrado e salva o novo
                     console.log(`Remover ${card.cns} e salvar ${numeroCns}`);
-
-                    window.$.ajax({
+                    $.ajax({
                       url: `${BASE_URL}/user/${responseTempCard._id}`,
                       type: 'DELETE',
                       contentType: 'application/json',
@@ -229,8 +203,7 @@
               );
             });
 
-            // CRIA O NOVO CADASTRO
-            window.$.ajax({
+            $.ajax({
               type: 'POST',
               url: `${BASE_URL}/user`,
               data: JSON.stringify({
@@ -256,33 +229,10 @@
         );
       }
     });
-
-    // CRIA O NOVO CADASTRO
-    window.$.ajax({
-      type: 'POST',
-      url: `${BASE_URL}/user`,
-      data: JSON.stringify({
-        numeroCns,
-        cpf,
-        nome,
-        dataNascimento,
-        sexo,
-        municipioNascimento,
-        municipioNascimentoCodigo,
-        nomeMae,
-        nomePai
-      }),
-      contentType: 'application/json',
-      success: (response) => {
-        console.log('Cartão agora está disponível offline.');
-        window.bloqueioLiberar();
-        window.offlinePrint(numeroCns);
-      }
-    });
   };
 
-  window.gravar = (usuarioSus) => {
-    var usuarioOperacao;
+  window.gravar = (usuarioSus: any): boolean => {
+    let usuarioOperacao: any;
 
     console.log('na funcao gravar - com proxy para salva em database');
 
@@ -294,7 +244,7 @@
     bloqueioGravacao();
 
     // Capturando a flag de dataquality
-    var dataQuality = false;
+    let dataQuality = false;
     if ($('#desabilitarDataQuality').is(':checked')) {
       dataQuality = true;
     }
@@ -308,20 +258,19 @@
       usuarioOperacao.gravar(
         usuarioSus,
         dataQuality,
-        function (response) {
+        function (response: any) {
           console.log('>>>> usuarioOperacao.gravar : response');
 
           if (response.merge) {
-            // chama janela para mostrar janelas os dois registros
+            // Call a window to show both records
             openModalMerge(response);
           } else {
             console.log('>>>> usuarioOperacao.gravar : gerarCartaoCadastro');
-            // TELA: NOVO CADASTRO
             window.solicitarDialogoGerarCartao(response.usuario);
             gerarCartaoCadastro(response.usuario);
           }
         },
-        function (erro) {
+        function (erro: any) {
           if (!erro) return false;
 
           if (erro.errorNoAltToNew) {
@@ -339,9 +288,9 @@
       usuarioOperacao.validarProtocolo(
         usuarioSus,
         dataQuality,
-        function (response) {
+        function (response: any) {
           if (response.merge != null) {
-            // chama janela para mostrar janelas os dois registros
+            // Call a window to show both records
             openModalMerge(response);
             this.isProtocoloHomologacao = true;
           } else if (response.usuario) {
@@ -350,7 +299,7 @@
             gerarCartaoCadastro(response);
           }
         },
-        function (erro) {
+        function (erro: any) {
           if (!erro) return false;
 
           if (erro.errorNoAltToNew) {
@@ -368,22 +317,22 @@
     return false;
   };
 
-  var timeoutDialog;
+  let timeoutDialog: any;
 
-  window.$.idleTimeout(timeoutDialog, 'div.ui-dialog-buttonpane button:first', {
+  $.idleTimeout(timeoutDialog, 'div.ui-dialog-buttonpane button:first', {
     titleMessage: '',
     idleAfter: 9999,
     pollingInterval: 9999,
-    keepAliveURL: window.context + 'restrito/manterSessaoAtiva.form',
+    keepAliveURL: 'http://your-keep-alive-url.example.com/restrito/manterSessaoAtiva.form',
     serverResponseEquals: 'OK',
     onTimeout: () => { },
     onIdle: () => { },
     onCountdown: () => { }
   });
 
-  // KEEP SESSION ALIVE
+  // Keep session alive
   setInterval(() => {
-    window.$.ajax(
+    $.ajax(
       'https://cadastro.saude.gov.br/novocartao/restrito/manterSessaoAtiva.form'
     ).then((response) => {
       console.log('manterSessaoAtiva: ', response);
