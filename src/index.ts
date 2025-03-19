@@ -13,6 +13,7 @@ import { dbConnect, getMongoDbSettings } from './database';
 import { getAbsolutePath } from './helper/pathHelper';
 import { showMenu } from './service/MenuService';
 import Logger from './service/Logger';
+import { findUserByCns, handleAddUser, handleUpdateUser } from './service/UserService';
 
 const initSystem = async (): Promise<void> => {
   const api = express();
@@ -44,7 +45,7 @@ const initSystem = async (): Promise<void> => {
   });
 };
 
-// initSystem();
+initSystem();
 
 const app = express();
 const server = http.createServer(app);
@@ -55,10 +56,34 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
 
-  // socket.on('ping', () => {
-  //   console.log('Received: ping');
-  //   socket.emit('pong');
-  // });
+  socket.on('sync_user', async (userToSync) => {
+    const user = await findUserByCns(userToSync.numeroCns);
+    
+    if (!user) {
+      console.log('Os dados do cartão serão salvos na base de dados local.');
+      const addUserResult = handleAddUser(userToSync);
+
+      if (!addUserResult) {
+        console.log('Falha ao salvar o cartão no banco de dados local.');
+        return;
+      }
+
+      console.log('Os dados foram salvos localmente!');
+      socket.emit('sync_completed', addUserResult);
+      return;
+    }
+
+    const updateResult = await handleUpdateUser({id: user.id, ...userToSync});
+
+    if (!updateResult) {
+      console.log('Falha ao sincronizar o cartão no banco de dados local.');
+      return;
+    }
+
+    console.log('Os dados foram sincronizados localmente!');
+    socket.emit('sync_completed', updateResult);
+    return;
+  });
 
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id);
