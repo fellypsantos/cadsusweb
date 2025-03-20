@@ -8,7 +8,7 @@ export default defineConfig({
   minify: false,
   bundle: true,
   format: ['cjs'],
-  noExternal: ['bwip-js', 'chalk', 'cors', 'date-fns', 'express', 'ini', 'keypress', 'mongoose', 'nunjucks', 'openurl', 'tty'],
+  noExternal: [ /(.*)/ ],
   loader: {
     '.njk': 'copy',
     '.ini': 'copy',
