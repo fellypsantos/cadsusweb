@@ -12,8 +12,8 @@ import { initTemplateEngine } from './views/nunjucks';
 import { dbConnect, getMongoDbSettings } from './database';
 import { getAbsolutePath } from './helper/pathHelper';
 import { showMenu } from './service/MenuService';
-import Logger from './service/Logger';
-import { findUserByCns, handleAddUser, handleUpdateUser } from './service/UserService';
+import { findUsersByCns, handleAddUser, handleUpdateUser } from './service/UserService';
+import User from './database/model/User';
 
 const initSystem = async (): Promise<void> => {
   const api = express();
@@ -57,11 +57,22 @@ io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
 
   socket.on('sync_user', async (userToSync) => {
-    const user = await findUserByCns(userToSync.numeroCns);
+    const users = await findUsersByCns(userToSync.numeroCns);
+    let wiped = false;
+
+    if (users && users.length > 1) {
+      // if found duplicated cards by CNS
+      // remove all of them
+      const ids = users.map(user => user._id);
+      await User.deleteMany({ _id: { $in: ids } });
+      wiped = true;
+      console.log('Registros duplicados foram removidos');
+    }
     
-    if (!user) {
+    if (wiped || users?.length === 0) {
+      // Save data locally
       console.log('Os dados do cartão serão salvos na base de dados local.');
-      const addUserResult = handleAddUser(userToSync);
+      const addUserResult = await handleAddUser(userToSync);
 
       if (!addUserResult) {
         console.log('Falha ao salvar o cartão no banco de dados local.');
@@ -73,16 +84,20 @@ io.on('connection', (socket) => {
       return;
     }
 
-    const updateResult = await handleUpdateUser({id: user.id, ...userToSync});
+    const user = users && users.length === 1 ? users.at(0) : null;
 
-    if (!updateResult) {
-      console.log('Falha ao sincronizar o cartão no banco de dados local.');
+    if(user) {
+      const updatedUser = await handleUpdateUser({id: user.id, ...userToSync});
+
+      if (!updatedUser) {
+        console.log('Falha ao sincronizar o cartão no banco de dados local.');
+        return;
+      }
+
+      console.log('Os dados foram sincronizados localmente!');
+      socket.emit('sync_completed', updatedUser);
       return;
     }
-
-    console.log('Os dados foram sincronizados localmente!');
-    socket.emit('sync_completed', updateResult);
-    return;
   });
 
   socket.on('disconnect', () => {
