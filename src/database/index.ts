@@ -3,18 +3,23 @@ import chalk from 'chalk';
 import fs from 'fs/promises';
 import { parse } from 'ini';
 import { getAbsolutePath } from '../helper/pathHelper';
+import Logger from '../service/Logger';
 
 export const dbConnect = async (serverIp: string): Promise<void> => {
   try {
-    await connect(`mongodb://${serverIp}/cadsus-local-api`, {
-      connectTimeoutMS: 5000
+    const connectionUrl = `mongodb://${serverIp}/cadsus-local-api`;
+
+    await connect(connectionUrl, {
+      connectTimeoutMS: 5000,
     });
+
+    console.log("MongoDB connected!");
   }
   catch (err) {
     const error = err as Error;
     const message = 'Não foi possível conectar ao banco de dados.';
 
-    console.log(chalk.bgRed(message, error.message));
+    Logger(chalk.bgRed(message, error.message));
 
     setTimeout(() => process.exit(), 3000);
   }

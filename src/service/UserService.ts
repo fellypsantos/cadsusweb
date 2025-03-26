@@ -11,14 +11,23 @@ export const findUserByCns = async (numeroCns: string): Promise<UserDocument | n
   return user;
 };
 
+export const findUsersByCns = async (numeroCns: string): Promise<UserDocument[] | null> => {
+  const user = await User.find({ numeroCns });
+
+  if (!user) return null;
+
+  return user;
+};
+
 export const handleAddUser = async (userdata: UserType): Promise<UserDocument | null> => {
   try {
+    Logger(JSON.stringify(userdata));
     const { numeroCns } = userdata;
     const user = await findUserByCns(numeroCns);
 
     if (user) return null;
 
-    const createdUser = await User.create(userdata);
+    const createdUser = await User.create({ ...userdata, nome: userdata.nome.toUpperCase() });
 
     Logger(
       chalk.blue(createdUser.numeroCns),
