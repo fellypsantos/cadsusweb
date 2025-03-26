@@ -21,6 +21,7 @@ export const findUsersByCns = async (numeroCns: string): Promise<UserDocument[] 
 
 export const handleAddUser = async (userdata: UserType): Promise<UserDocument | null> => {
   try {
+    Logger(JSON.stringify(userdata));
     const { numeroCns } = userdata;
     const user = await findUserByCns(numeroCns);
 
