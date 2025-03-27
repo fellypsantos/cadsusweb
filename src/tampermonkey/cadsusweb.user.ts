@@ -31,7 +31,7 @@
     $('#tbl-stack-diag tbody').html('');
 
     const stack = getStack();
-  
+
     stack.forEach((cns) => {
       $('#tbl-stack-diag tbody').append(`
       <tr>
@@ -158,7 +158,7 @@
 
     if (url.includes('incluir.form')) {
       console.log('Novo cartão foi criado e será sincronizado localmente.');
-      socket.emit('sync_user', jsonResponse);
+      socket.emit('sync_user', jsonResponse.usuario);
       return;
     }
 
@@ -192,4 +192,26 @@
   socket.on('disconnect', () => {
     console.warn('Disconnected from WebSocket server');
   });
+
+  var timeoutDialog;
+
+  window.$.idleTimeout(timeoutDialog, 'div.ui-dialog-buttonpane button:first', {
+    titleMessage: '',
+    idleAfter: 9999,
+    pollingInterval: 9999,
+    keepAliveURL: window.context + 'restrito/manterSessaoAtiva.form',
+    serverResponseEquals: 'OK',
+    onTimeout: () => { },
+    onIdle: () => { },
+    onCountdown: () => { }
+  });
+
+  // KEEP SESSION ALIVE
+  setInterval(() => {
+    window.$.ajax(
+      'https://cadastro.saude.gov.br/novocartao/restrito/manterSessaoAtiva.form'
+    ).then((response) => {
+      console.log('manterSessaoAtiva: ', response);
+    });
+  }, 30 * 1000);
 })();
