@@ -29,7 +29,7 @@ export const getUserDataToGenerateCards = async (cns: string): Promise<CardUserD
     );
 
     const { numeroCns, nome, dataNascimento, sexo, municipioNascimentoCodigo } = user;
-    const barcode = await generateBarCode({ cns: cnsNumber, gender: sexo, cityCode: municipioNascimentoCodigo });
+    const barcode = await generateBarCode({ cns: cnsNumber, cpf: '', gender: sexo, cityCode: municipioNascimentoCodigo });
 
     cardsData.push({
       numeroCns: displayFormattedCns(numeroCns),
@@ -43,6 +43,6 @@ export const getUserDataToGenerateCards = async (cns: string): Promise<CardUserD
   return cardsData;
 };
 
-const displayFormattedCns = (cns: string): string => {
+export const displayFormattedCns = (cns: string): string => {
   return cns.replace(/^(\d{3})(\d{4})(\d{4})(\d{4})/, '$1 $2 $3 $4');
 };

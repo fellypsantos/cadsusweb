@@ -1,4 +1,4 @@
-import express, { json, static as staticDirectory } from 'express';
+import express, { json, urlencoded, static as staticDirectory } from 'express';
 import cors from 'cors';
 import chalk from 'chalk';
 import routes from './routes';
@@ -6,14 +6,13 @@ import http from 'http';
 import { Server } from 'socket.io';
 
 import './datefns';
-import './database/model/User';
+import User from './database/model/User';
 
 import { initTemplateEngine } from './views/nunjucks';
 import { dbConnect, getMongoDbSettings } from './database';
 import { getAbsolutePath } from './helper/pathHelper';
 import { showMenu } from './service/MenuService';
 import { findUsersByCns, handleAddUser, handleUpdateUser } from './service/UserService';
-import User from './database/model/User';
 
 const initSystem = async (): Promise<void> => {
   const api = express();
@@ -30,6 +29,7 @@ const initSystem = async (): Promise<void> => {
   api.set('view engine', 'njk');
   api.use(staticDirectory(getAbsolutePath('public')));
   api.use(json());
+  api.use(urlencoded({ extended: true }));
   api.use(cors());
   api.use(routes);
 
@@ -68,7 +68,7 @@ io.on('connection', (socket) => {
       wiped = true;
       console.log('Registros duplicados foram removidos');
     }
-    
+
     if (wiped || users?.length === 0) {
       // Save data locally
       console.log('Os dados do cartão serão salvos na base de dados local.');
@@ -86,8 +86,8 @@ io.on('connection', (socket) => {
 
     const user = users && users.length === 1 ? users.at(0) : null;
 
-    if(user) {
-      const updatedUser = await handleUpdateUser({id: user.id, ...userToSync});
+    if (user) {
+      const updatedUser = await handleUpdateUser({ id: user.id, ...userToSync });
 
       if (!updatedUser) {
         console.log('Falha ao sincronizar o cartão no banco de dados local.');
