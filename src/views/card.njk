@@ -113,6 +113,27 @@
         box-shadow: 0px 0px 5px 1px #105076;
       }
 
+      .cpf-value[contenteditable="true"]:empty:before {
+        content: "Digite o CPF";
+        color: #999;
+        font-style: italic;
+      }
+
+      .cpf-value[contenteditable="true"]:focus {
+        outline: 2px solid #4CAF50;
+        background-color: #f8fff8;
+        border-radius: 3px;
+      }
+
+      /* Optional: Style only empty CPFs differently */
+      .cpf-value[contenteditable="true"]:empty {
+        background-color: #fff3cd;
+        border: 1px dashed #ffc107;
+        padding: 2px 4px;
+        min-width: 120px;
+        display: inline-block;
+      }
+
       /* Escode botão na impressão */
       @media print{
         .btnPrint { display: none; }
@@ -142,7 +163,10 @@
           </section>
           <section class="barcode">
             <span class="number cns">CNS: {{ item.numeroCns }}</span>
-            <span class="number cpf">CPF: {{ item.cpf }}</span>
+            <span class="number cpf">
+              <span>CPF:</span>
+              <span contenteditable="true" class="cpf-value">{{ item.cpf if item.cpf !== '' else 'Digite o CPF' }}</span>
+            </span>
             <img src="{{ item.barcode }}" class="{% if item.cpf !== '' %}barcode-cpf{% endif %}" />
           </section>
         </div>

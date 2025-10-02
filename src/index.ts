@@ -105,6 +105,6 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(3000, () => {
+server.listen(3333, () => {
   console.log('WebSocket server running on ws://localhost:3000');
 });
